@@ -16,11 +16,22 @@
   --spacing-lg: calc(1.5 * var(--spacing));
   --spacing-xl: calc(3 * var(--spacing));
 
+  /* Variables de color */
+  --text-light: black;
+  --text-dark: white;
+  --bg-light: white;
+  --bg-dark: black;
   --scrollbar-color: #bbbbbb;
+
+  --text-color: var(--text-color-light);
+  --bg-color: var(--bg-light);
+  --bg-card-color: var(--bg-card-light);
 }
 
 body {
   padding: 0;
+  color: var(--text-color);
+  background-color: var(--bg-color);
 
 }
 
