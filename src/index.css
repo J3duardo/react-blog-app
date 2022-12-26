@@ -1,0 +1,48 @@
+:root {
+  /* Variables de escala tipográfica */
+  --heading-1: 4.209rem;
+  --heading-2: 3.157rem;
+  --heading-3: 2.369rem;
+  --heading-4: 1.777rem;
+  --heading-5: 1.333rem;
+  --paragraph: 1rem;
+  --text-small: 0.75rem;
+
+  /* Variables de espaciado */
+  --line-height: 1.5;
+  --baseline: calc(var(--paragraph) * var(--line-height));
+  --spacing: calc(var(--baseline) * 0.5);
+  --spacing-sm: calc(0.75 * var(--spacing));
+  --spacing-lg: calc(1.5 * var(--spacing));
+  --spacing-xl: calc(3 * var(--spacing));
+
+  --scrollbar-color: #bbbbbb;
+}
+
+body {
+  padding: 0;
+
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.inner-wrapper {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  border-right: 1px solid lightgrey;
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-color);
+}
+
+.overflow-ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
