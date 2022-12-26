@@ -1,6 +1,7 @@
 import {Suspense, lazy} from "react";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
+import NavBar from "./components/NavBar";
 import Spinner from "./components/Spinner";
 
 const HomePage = lazy(() => import("./pages/Home"));
@@ -13,16 +14,17 @@ const NotFoundPage = lazy(() => import("./pages/NotFound"));
 
 const App = () => {
   return (
-    <Suspense fallback={<Spinner />}>
-      <ToastContainer
-        position="bottom-left"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        pauseOnHover={true}
-        pauseOnFocusLoss={true}
-      />
-      <BrowserRouter>
+    <BrowserRouter>
+      <NavBar />
+      <Suspense fallback={<Spinner />}>
+        <ToastContainer
+          position="bottom-left"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          pauseOnHover={true}
+          pauseOnFocusLoss={true}
+        />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
@@ -32,8 +34,8 @@ const App = () => {
           <Route path="/about" element={<AboutPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
-      </BrowserRouter>
-    </Suspense>
+      </Suspense>
+    </BrowserRouter>
   );
 };
 

@@ -1,0 +1,31 @@
+.navbar__toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.navbar__items {
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.navbar__item {
+  text-decoration: none;
+  font-family: inherit;
+  color: inherit;
+}
+
+.navbar__item__btn {
+  text-transform: capitalize;
+  color: var(--text-color);
+  background-color: transparent;
+  transition: background-color 300ms ease-in-out;
+}
+
+.navbar__item__btn:hover,
+.navbar__item__btn--active {
+  background-color: rgba(0,0,0,0.15);
+}
