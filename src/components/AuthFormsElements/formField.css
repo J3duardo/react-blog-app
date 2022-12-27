@@ -1,0 +1,15 @@
+.form__field .MuiInputBase-root {
+  background-color: transparent;
+  border: 1px solid grey;
+  border-radius: 5px;
+}
+
+.form__field--invalid .MuiInputBase-root {
+  border-color: 1px solid red;
+  background-color: rgba(255, 0, 0, 0.10);
+}
+
+.form-field__error-msg {
+  color: red;
+  font-weight: bold;
+}
