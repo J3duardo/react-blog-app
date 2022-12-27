@@ -1,4 +1,4 @@
-.login {
+.authForm {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -6,7 +6,7 @@
   min-height: 100vh;
 }
 
-.login__form {
+.authForm__form {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -16,6 +16,6 @@
   max-width: 350px;
 }
 
-.login__button {
+.authForm__button {
   text-transform: capitalize;
 }

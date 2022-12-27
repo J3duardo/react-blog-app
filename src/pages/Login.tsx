@@ -3,7 +3,7 @@ import {Box, Button, Typography} from "@mui/material";
 import {useForm, FormProvider} from "react-hook-form";
 import {AiOutlineLogin} from "react-icons/ai";
 import {EmailField, PasswordField} from "../components/AuthFormsElements";
-import "../styles/loginPage.css";
+import "../styles/authForms.css";
 
 export interface LoginFormFields {
   email: string;
@@ -19,20 +19,20 @@ const Login = () => {
   };
 
   return (
-    <Box className="login" component="section">
+    <Box className="authForm" component="section">
       <Typography variant="h2" marginBottom="1.5rem">
         Login
       </Typography>
       <FormProvider {...methods}>
         <form
-          className="login__form"
+          className="authForm__form"
           onSubmit={methods.handleSubmit(onSubmitHandler)}
           noValidate
         >
           <EmailField />
-          <PasswordField withValidation={false} />
+          <PasswordField />
           <Button
-            className="login__button"
+            className="authForm__button"
             variant="outlined"
             type="submit"
             endIcon={<AiOutlineLogin />}
@@ -45,6 +45,6 @@ const Login = () => {
       </FormProvider>
     </Box>
   )
-}
+};
 
 export default Login;

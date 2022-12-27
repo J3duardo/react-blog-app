@@ -10,7 +10,7 @@ const passwordRegexp = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_])(?!.*[\s\n]).{6
 const invalidPasswordMsg = "The password must contain at least one uppercase, one lowercase, one number and one special character";
 
 interface Props {
-  withValidation: boolean;
+  withValidation?: boolean;
 };
 
 export const PasswordField = ({withValidation}: Props) => {
@@ -36,7 +36,10 @@ export const PasswordField = ({withValidation}: Props) => {
         )
       }}
       InputLabelProps={{error: isInvalid}}
-      helperText={isInvalid && (withValidation ? <PasswordvalidationMsg password={watch("password")} /> : <ValidationErrorMsg errorMsg={errors.password!.message as string} />)}
+      helperText={isInvalid && (withValidation ?
+        <PasswordvalidationMsg password={watch("password")} />  :
+        <ValidationErrorMsg errorMsg={errors.password!.message as string} />
+      )}
       {
         ...register("password", {
           required: {value: true, message: "The password is required"},
