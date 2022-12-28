@@ -5,7 +5,11 @@ import {SignupFormFields} from "../../pages/Signup";
 import PasswordInputIcon from "./PasswordInputIcon";
 import ValidationErrorMsg from "./ValidationErrorMsg";
 
-export const PasswordConfirmField = () => {
+interface Props {
+  disabled: boolean;
+};
+
+export const PasswordConfirmField = ({disabled}: Props) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const {register, formState: {errors}} = useFormContext<SignupFormFields>();
 
@@ -18,6 +22,7 @@ export const PasswordConfirmField = () => {
       label="Confirm your password"
       type={passwordVisible ? "text" : "password"}
       fullWidth
+      disabled={disabled}
       InputProps={{
         disableUnderline: true,
         endAdornment: (

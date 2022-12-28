@@ -3,9 +3,13 @@ import {useFormContext} from "react-hook-form";
 import {LoginFormFields} from "../../pages/Login";
 import ValidationErrorMsg from "./ValidationErrorMsg";
 
-const emailRegexp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+const emailRegexp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-export const EmailField = () => {
+interface Props {
+  disabled: boolean;
+};
+
+export const EmailField = ({disabled}: Props) => {
   const {register, formState: {errors}} = useFormContext<LoginFormFields>();
 
   const isInvalid = !!errors.email;
@@ -17,6 +21,7 @@ export const EmailField = () => {
       label="Email"
       type="email"
       fullWidth
+      disabled={disabled}
       InputProps={{disableUnderline: true}}
       InputLabelProps={{error: isInvalid}}
       helperText={isInvalid && <ValidationErrorMsg errorMsg={errors.email!.message as string} />}

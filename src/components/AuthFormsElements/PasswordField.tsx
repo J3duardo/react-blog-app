@@ -11,9 +11,10 @@ const invalidPasswordMsg = "The password must contain at least one uppercase, on
 
 interface Props {
   withValidation?: boolean;
+  disabled: boolean;
 };
 
-export const PasswordField = ({withValidation}: Props) => {
+export const PasswordField = ({withValidation, disabled}: Props) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const {register, watch, formState: {errors}} = useFormContext<LoginFormFields>();
 
@@ -26,6 +27,7 @@ export const PasswordField = ({withValidation}: Props) => {
       label="Password"
       type={passwordVisible ? "text" : "password"}
       fullWidth
+      disabled={disabled}
       InputProps={{
         disableUnderline: true,
         endAdornment: (

@@ -8,13 +8,14 @@ const NAME_REGEXP = /^[A-Za-zÀ-ž]{3,50}$/;
 interface Props {
   fieldName: "name" | "lastname";
   label: string;
+  disabled: boolean;
 };
 
 /**
  * Campo genérico de texto que sólo acepta letras con o sin diacríticas
  * sin espacios ni al principio, ni entre, ni al final del string.
  */
-export const GenericTextField = ({fieldName, label}: Props) => {
+export const GenericTextField = ({fieldName, label, disabled}: Props) => {
   const {register, formState: {errors}} = useFormContext<SignupFormFields>();
 
   const isInvalid = !!errors[fieldName];
@@ -26,6 +27,7 @@ export const GenericTextField = ({fieldName, label}: Props) => {
       label={label}
       type="text"
       fullWidth
+      disabled={disabled}
       InputProps={{disableUnderline: true}}
       InputLabelProps={{error: isInvalid}}
       helperText={isInvalid && <ValidationErrorMsg errorMsg={errors[fieldName]!.message as string} />}
