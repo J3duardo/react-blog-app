@@ -1,14 +1,12 @@
 import {useState} from "react";
 import {Box, Button, Typography, Alert} from "@mui/material";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import {useForm, FormProvider} from "react-hook-form";
 import {useNavigate} from "react-router-dom";
 import {AiOutlineLogin} from "react-icons/ai";
-import {createUserWithEmailAndPassword, updateProfile, AuthError} from "firebase/auth";
 import {GenericTextField, EmailField, PasswordField, PasswordConfirmField} from "../components/AuthFormsElements";
-import {auth} from "../firebase";
-import {generateFirebaseErrorMsg} from "../utils/firebaseErrorMessages";
 import {LayoutState} from "../redux/store";
+import {AuthConfig, authHandler} from "../utils/auth";
 import "../styles/authForms.css";
 
 export interface SignupFormFields {
@@ -21,6 +19,7 @@ export interface SignupFormFields {
 
 const Signup = () => {
   const {pagePadding} = useSelector((state: LayoutState) => state.layout);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -42,35 +41,17 @@ const Signup = () => {
       });
     };
 
-    setLoading(true);
-    setBackendError(null);
+    const authConfig = {
+      authMode: "signup",
+      values,
+      methods,
+      navigate,
+      setLoading,
+      setBackendError,
+      dispatch
+    } satisfies AuthConfig;
 
-    try {
-      const {name, lastname, email, password} = values;
-      const {user} = await createUserWithEmailAndPassword(auth, email, password);
-  
-      await updateProfile(user, {
-        displayName: `${name} ${lastname}`
-      });
-
-      navigate("/", {replace: true});
-
-    } catch (error: unknown) {
-      const authErr = error as AuthError;
-      const errMessage = generateFirebaseErrorMsg(authErr.code);
-
-      if (errMessage.toLowerCase().includes("email")) {
-        return methods.setError("email", {
-          type: "Firebase email error",
-          message: errMessage
-        });
-      };
-
-      setBackendError(errMessage);
-
-    } finally {
-      setLoading(false);
-    };
+    await authHandler(authConfig);
   };
 
   return (
