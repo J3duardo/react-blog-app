@@ -15,8 +15,8 @@ const MENU_ITEMS__RIGHT = [
 
 const NavBar = () => {
   return (
-    <AppBar component="nav">
-      <Toolbar className="navbar__toolbar">
+    <AppBar component="nav" position="fixed">
+      <Toolbar className="navbar__toolbar inner-wrapper">
         <Box className="navbar__items">
           {MENU_ITEMS__LEFT.map((el) => {
             return (

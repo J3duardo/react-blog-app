@@ -42,7 +42,7 @@ body {
 
 .inner-wrapper {
   width: 100%;
-  max-width: 1440px;
+  max-width: 1200px;
   margin: 0 auto;
   border-right: 1px solid lightgrey;
 }
