@@ -7,14 +7,25 @@ const spinnerWrapperStyles: CSSProperties = {
   justifyContent: "center",
   alignItems: "center",
   width: "100%",
-  height: "100vh",
   zIndex: 10
 };
 
-const Spinner = () => {
+interface Props {
+  containerHeight: string;
+  spinnerWidth: string;
+  spinnerHeight: string;
+  spinnerColor: string;
+}
+
+const Spinner = ({containerHeight, spinnerWidth, spinnerHeight, spinnerColor}: Props) => {
   return (
-    <Box style={spinnerWrapperStyles}>
-      <CircularProgress style={{width: "50px", height: "50px"}} />
+    <Box style={{...spinnerWrapperStyles, height: containerHeight}}>
+      <CircularProgress style={{
+          width: spinnerWidth, 
+          height: spinnerHeight,
+          color: spinnerColor
+        }}
+      />
     </Box>
   );
 };
