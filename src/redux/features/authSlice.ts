@@ -2,22 +2,22 @@ import {createSlice} from "@reduxjs/toolkit";
 
 export interface UserData {
   uid: string;
-  displayName: string | null;
+  displayName: string;
   email: string | null;
   emailVerified: boolean;
   photoURL: string | null;
 };
 
-export interface UserState {
+interface UserState {
   isAuth: boolean;
   user: UserData | null;
   loading: boolean;
-};
+}
 
 const initialState: UserState = {
   isAuth: false,
   user: null,
-  loading: false
+  loading: true
 };
 
 const authSlice = createSlice({
@@ -27,12 +27,13 @@ const authSlice = createSlice({
     setCurrentUser: (state, action: {type: string, payload: UserData}) => {
       state.isAuth = true;
       state.user = action.payload;
+      state.loading = false;
       localStorage.setItem("currentUser", JSON.stringify(state.user));
     },
     logoutUser: (state) => {
       state.isAuth = false;
       state.user = null;
-      localStorage.removeItem("user");
+      localStorage.removeItem("currentUser");
     }
   }
 });
