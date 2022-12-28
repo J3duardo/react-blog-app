@@ -1,8 +1,11 @@
-import {Suspense, lazy} from "react";
+import {Suspense, lazy, useEffect} from "react";
+import {useDispatch} from "react-redux";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
 import NavBar from "./components/NavBar";
 import Spinner from "./components/Spinner";
+import {auth} from "./firebase";
+import {UserData, setCurrentUser, logoutUser} from "./redux/features/authSlice";
 
 const HomePage = lazy(() => import("./pages/Home"));
 const LoginPage = lazy(() => import("./pages/Login"));
@@ -13,10 +16,38 @@ const AboutPage = lazy(() => import("./pages/About"));
 const NotFoundPage = lazy(() => import("./pages/NotFound"));
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        const userData: UserData = {
+          uid: user.uid,
+          displayName: user.displayName || "",
+          email: user.email,
+          emailVerified: user.emailVerified,
+          photoURL: user.photoURL
+        };
+
+        dispatch(setCurrentUser(userData));
+
+      } else {
+        dispatch(logoutUser())
+      }
+    });
+  }, []);
+
   return (
     <BrowserRouter>
       <NavBar />
-      <Suspense fallback={<Spinner />}>
+      <Suspense fallback={
+        <Spinner 
+          containerHeight="100vh"
+          spinnerWidth="50px"
+          spinnerHeight="50px"
+          spinnerColor="black"
+        />}
+      >
         <ToastContainer
           position="bottom-left"
           autoClose={5000}
