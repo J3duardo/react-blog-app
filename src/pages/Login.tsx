@@ -2,11 +2,13 @@ import {useState} from "react";
 import {Box, Button, Typography, Alert} from "@mui/material";
 import {useForm, FormProvider} from "react-hook-form";
 import {useNavigate} from "react-router-dom";
+import {useSelector} from "react-redux";
 import {AiOutlineLogin} from "react-icons/ai";
 import {AuthError, signInWithEmailAndPassword} from "firebase/auth";
 import {EmailField, PasswordField} from "../components/AuthFormsElements";
 import {generateFirebaseErrorMsg} from "../utils/firebaseErrorMessages";
 import {auth} from "../firebase";
+import {LayoutState} from "../redux/store";
 import "../styles/authForms.css";
 
 export interface LoginFormFields {
@@ -16,12 +18,14 @@ export interface LoginFormFields {
 
 const Login = () => {
   const navigate = useNavigate();
+  const {navbarHeight} = useSelector((state: LayoutState) => state.layout);
 
   const [loading, setLoading] = useState(false);
   const [backendError, setBackendError] = useState<null | string>(null);
 
   const methods = useForm<LoginFormFields>({mode: "onSubmit"});
 
+  // Funcionalidad para iniciar sesión
   const onSubmitHandler = async (values: LoginFormFields) => {
     const {email, password} = values;
 
@@ -70,7 +74,12 @@ const Login = () => {
   };
 
   return (
-    <Box className="authForm" component="section">
+    <Box
+      paddingTop={`calc(${navbarHeight}px + 1rem)`}
+      paddingBottom={`calc(${navbarHeight}px + 1rem)`}
+      className="authForm"
+      component="section"
+    >
       <Typography variant="h2" marginBottom="1.5rem">
         Login
       </Typography>

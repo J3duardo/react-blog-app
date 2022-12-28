@@ -1,12 +1,14 @@
 import {useState} from "react";
 import {Box, Button, Typography, Alert} from "@mui/material";
+import {useSelector} from "react-redux";
 import {useForm, FormProvider} from "react-hook-form";
 import {useNavigate} from "react-router-dom";
 import {AiOutlineLogin} from "react-icons/ai";
 import {createUserWithEmailAndPassword, updateProfile, AuthError} from "firebase/auth";
 import {GenericTextField, EmailField, PasswordField, PasswordConfirmField} from "../components/AuthFormsElements";
 import {auth} from "../firebase";
-import { generateFirebaseErrorMsg } from "../utils/firebaseErrorMessages";
+import {generateFirebaseErrorMsg} from "../utils/firebaseErrorMessages";
+import {LayoutState} from "../redux/store";
 import "../styles/authForms.css";
 
 export interface SignupFormFields {
@@ -18,6 +20,7 @@ export interface SignupFormFields {
 };
 
 const Signup = () => {
+  const {navbarHeight} = useSelector((state: LayoutState) => state.layout);
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -25,6 +28,7 @@ const Signup = () => {
   
   const methods = useForm<SignupFormFields>({mode: "onSubmit"});
 
+  // Funcionalidad para registrar al usuario
   const onSubmitHandler = async (values: SignupFormFields) => {
     const newPassword = methods.getValues("password");
     const passwordConfirm = methods.getValues("passwordConfirm");
@@ -70,7 +74,12 @@ const Signup = () => {
   };
 
   return (
-    <Box className="authForm" component="section">
+    <Box
+      paddingTop={`calc(${navbarHeight}px + 1rem)`}
+      paddingBottom={`calc(${navbarHeight}px + 1rem)`}
+      className="authForm"
+      component="section"
+    >
       <Typography variant="h2" marginBottom="1.5rem">
         Signup
       </Typography>
