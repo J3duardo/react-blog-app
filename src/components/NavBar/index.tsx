@@ -12,7 +12,7 @@ import "./navBar.css";
 
 const MENU_ITEMS__LEFT = [
   {id: 1, title: "Home", to: "/"},
-  {id: 2, title: "Create", to: "/create"},
+  {id: 2, title: "Create", to: "/blog/create"},
   {id: 3, title: "About", to: "/about"},
 ];
 
