@@ -1,10 +1,12 @@
-import {useState} from "react";
+import {useState, useEffect, useRef, MutableRefObject} from "react";
 import {NavLink, useNavigate} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
 import {AppBar, Toolbar, Button, Box} from "@mui/material";
 import Spinner from "../Spinner";
-import {logoutUser} from "../../redux/features/authSlice";
+import useResizeObserver from "../../hooks/useResizeObserver";
 import {AuthState} from "../../redux/store";
+import {logoutUser} from "../../redux/features/authSlice";
+import {setNavbarHeight} from "../../redux/features/layoutSlice";
 import {auth} from "../../firebase";
 import "./navBar.css";
 
@@ -20,12 +22,24 @@ const MENU_ITEMS_NOAUTH = [
 ];
 
 const NavBar = () => {
+  const navbarRef = useRef<HTMLDivElement | null>(null);
   const {isAuth, user, loading} = useSelector((state: AuthState) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [loggingOut, setLoggingOut] = useState(false);
 
+  // Determinar el height del navbar
+  const {elemHeight: navbarHeight} = useResizeObserver({
+    elementRef: navbarRef as MutableRefObject<HTMLDivElement>
+  });
+
+  // Actualizar el state global del navbar
+  useEffect(() => {
+    dispatch(setNavbarHeight(navbarHeight))
+  }, [navbarHeight]);
+
+  // Funcionalidad para cerrar sesión
   const logoutHandler = async () => {
     try {
       setLoggingOut(true);
@@ -40,7 +54,7 @@ const NavBar = () => {
   };
 
   return (
-    <AppBar component="nav" position="fixed">
+    <AppBar component="nav" position="fixed" ref={navbarRef}>
       <Toolbar className="navbar__toolbar inner-wrapper">
         <Box className="navbar__items">
           {MENU_ITEMS__LEFT.map((el) => {
