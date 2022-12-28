@@ -34,17 +34,17 @@ export const authHandler = async (config: AuthConfig) => {
   const {authMode, values, setLoading, setBackendError, methods, navigate, dispatch} = config;
 
   // Type guard para verificar si la operación es se login
-  const isLogin = (formValues: unknown): formValues is LoginFormFields => {
-    return authMode === "login";
+  const isLoginMode = (values: LoginFormFields | SignupFormFields): values is LoginFormFields => {
+    return !Object.keys(values).some(el => el === "name");
   };
 
   // Type guard para verificar si la operación es de signup
-  const isSignup = (formValues: unknown): formValues is SignupFormFields => {
-    return authMode === "signup";
+  const isSignupMode = (values: LoginFormFields | SignupFormFields): values is SignupFormFields => {
+    return Object.keys(values).some(el => el === "name");
   };
 
   // Si es login, utilizar la funcionalidad de iniciar sesión
-  if (isLogin(values)) {
+  if (isLoginMode(values)) {
     setLoading(true);
     setBackendError(null);
 
@@ -62,7 +62,7 @@ export const authHandler = async (config: AuthConfig) => {
   };
 
   // Si es signup, utilizar la funcionalidad de registro de usuario
-  if (isSignup(values)) {
+  if (isSignupMode(values)) {
     setLoading(true);
     setBackendError(null);
 
