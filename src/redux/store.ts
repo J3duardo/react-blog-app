@@ -12,9 +12,13 @@ export interface AuthState {
 
 export interface LayoutState {
   layout: {
-    navbarHeight: number
+    navbarHeight: number,
+    pagePadding: {
+      top: string,
+      bottom: string
+    }
   }
-}
+};
 
 export const store = configureStore({
   reducer: {

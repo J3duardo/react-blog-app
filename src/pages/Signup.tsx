@@ -20,7 +20,7 @@ export interface SignupFormFields {
 };
 
 const Signup = () => {
-  const {navbarHeight} = useSelector((state: LayoutState) => state.layout);
+  const {pagePadding} = useSelector((state: LayoutState) => state.layout);
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -75,8 +75,8 @@ const Signup = () => {
 
   return (
     <Box
-      paddingTop={`calc(${navbarHeight}px + 1rem)`}
-      paddingBottom={`calc(${navbarHeight}px + 1rem)`}
+      paddingTop={pagePadding.top}
+      paddingBottom={pagePadding.bottom}
       className="authForm"
       component="section"
     >

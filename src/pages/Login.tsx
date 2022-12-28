@@ -18,7 +18,7 @@ export interface LoginFormFields {
 
 const Login = () => {
   const navigate = useNavigate();
-  const {navbarHeight} = useSelector((state: LayoutState) => state.layout);
+  const {pagePadding} = useSelector((state: LayoutState) => state.layout);
 
   const [loading, setLoading] = useState(false);
   const [backendError, setBackendError] = useState<null | string>(null);
@@ -75,8 +75,8 @@ const Login = () => {
 
   return (
     <Box
-      paddingTop={`calc(${navbarHeight}px + 1rem)`}
-      paddingBottom={`calc(${navbarHeight}px + 1rem)`}
+      paddingTop={pagePadding.top}
+      paddingBottom={pagePadding.bottom}
       className="authForm"
       component="section"
     >

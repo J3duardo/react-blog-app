@@ -6,7 +6,7 @@ import Spinner from "../Spinner";
 import useResizeObserver from "../../hooks/useResizeObserver";
 import {AuthState} from "../../redux/store";
 import {logoutUser} from "../../redux/features/authSlice";
-import {setNavbarHeight} from "../../redux/features/layoutSlice";
+import {setNavbarHeight, setPagePadding} from "../../redux/features/layoutSlice";
 import {auth} from "../../firebase";
 import "./navBar.css";
 
@@ -34,9 +34,13 @@ const NavBar = () => {
     elementRef: navbarRef as MutableRefObject<HTMLDivElement>
   });
 
-  // Actualizar el state global del navbar
+  // Actualizar el state global del layout
   useEffect(() => {
-    dispatch(setNavbarHeight(navbarHeight))
+    dispatch(setNavbarHeight(navbarHeight));
+    dispatch(setPagePadding({
+      top: `calc(${navbarHeight}px + 1rem)`,
+      bottom: `calc(${navbarHeight}px + 1rem)`
+    }));
   }, [navbarHeight]);
 
   // Funcionalidad para cerrar sesión
