@@ -2,13 +2,11 @@ import {useState} from "react";
 import {Box, Button, Typography, Alert} from "@mui/material";
 import {useForm, FormProvider} from "react-hook-form";
 import {useNavigate} from "react-router-dom";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import {AiOutlineLogin} from "react-icons/ai";
-import {AuthError, signInWithEmailAndPassword} from "firebase/auth";
 import {EmailField, PasswordField} from "../components/AuthFormsElements";
-import {generateFirebaseErrorMsg} from "../utils/firebaseErrorMessages";
-import {auth} from "../firebase";
 import {LayoutState} from "../redux/store";
+import {AuthConfig, authHandler} from "../utils/auth";
 import "../styles/authForms.css";
 
 export interface LoginFormFields {
@@ -18,6 +16,7 @@ export interface LoginFormFields {
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const {pagePadding} = useSelector((state: LayoutState) => state.layout);
 
   const [loading, setLoading] = useState(false);
@@ -27,50 +26,17 @@ const Login = () => {
 
   // Funcionalidad para iniciar sesión
   const onSubmitHandler = async (values: LoginFormFields) => {
-    const {email, password} = values;
+    const authConfig = {
+      authMode: "login",
+      values,
+      methods,
+      navigate,
+      setLoading,
+      setBackendError,
+      dispatch
+    } satisfies AuthConfig;
 
-    setLoading(true);
-    setBackendError(null);
-
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate("/", {replace: true});
-
-    } catch (error: unknown) {
-      const authErr = error as AuthError;
-      const errMessage = generateFirebaseErrorMsg(authErr.code);
-
-      if (errMessage.includes("email") && errMessage.includes("password")) {
-        methods.setError("email", {
-          type: "Firebase email error",
-          message: errMessage
-        });
-
-        return methods.setError("password", {
-          type: "Firebase password error",
-          message: errMessage
-        });
-      };
-
-      if (errMessage.toLowerCase().includes("email")) {
-        return methods.setError("email", {
-          type: "Firebase email error",
-          message: errMessage
-        });
-      };
-
-      if (errMessage.toLowerCase().includes("password")) {
-        return methods.setError("password", {
-          type: "Firebase password error",
-          message: errMessage
-        });
-      };
-      
-      setBackendError(errMessage);
-      
-    } finally {
-      setLoading(false);
-    }
+    await authHandler(authConfig);
   };
 
   return (
