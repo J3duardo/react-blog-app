@@ -30,6 +30,9 @@ const authSlice = createSlice({
       state.loading = false;
       localStorage.setItem("currentUser", JSON.stringify(state.user));
     },
+    setLoading: (state, action: {type: string, payload: boolean}) => {
+      state.loading = action.payload
+    },
     logoutUser: (state) => {
       state.isAuth = false;
       state.user = null;
@@ -39,4 +42,4 @@ const authSlice = createSlice({
 });
 
 export const authReducer = authSlice.reducer;
-export const {setCurrentUser, logoutUser} = authSlice.actions;
+export const {setCurrentUser, logoutUser, setLoading} = authSlice.actions;

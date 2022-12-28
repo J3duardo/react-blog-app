@@ -4,8 +4,8 @@ import {BrowserRouter, Routes, Route} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
 import NavBar from "./components/NavBar";
 import Spinner from "./components/Spinner";
+import {UserData, setCurrentUser, logoutUser, setLoading} from "./redux/features/authSlice";
 import {auth} from "./firebase";
-import {UserData, setCurrentUser, logoutUser} from "./redux/features/authSlice";
 
 const HomePage = lazy(() => import("./pages/Home"));
 const LoginPage = lazy(() => import("./pages/Login"));
@@ -32,7 +32,8 @@ const App = () => {
         dispatch(setCurrentUser(userData));
 
       } else {
-        dispatch(logoutUser())
+        dispatch(logoutUser());
+        dispatch(setLoading(false));
       }
     });
   }, []);
