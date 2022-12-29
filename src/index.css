@@ -26,6 +26,8 @@
   --text-color: var(--text-color-light);
   --bg-color: var(--bg-light);
   --bg-card-color: var(--bg-card-light);
+
+  --mui-error: #d32f2f;
 }
 
 body {
@@ -44,7 +46,6 @@ body {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  border-right: 1px solid lightgrey;
 }
 
 .custom-scrollbar {

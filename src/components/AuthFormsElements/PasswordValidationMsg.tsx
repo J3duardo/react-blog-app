@@ -51,10 +51,10 @@ const PasswordvalidationMsg = ({password}: Props) => {
     return (
       <ListItem style={{padding: 0}}>
         <ListItemIcon style={{minWidth: "30px"}}>
-          {props.isValid ? <AiOutlineCheckCircle style={{color: "green", fontSize: "1rem"}}/> : <FaRegTimesCircle style={{color: "red", fontSize: "1rem"}} />}
+          {props.isValid ? <AiOutlineCheckCircle style={{color: "green", fontSize: "1rem"}}/> : <FaRegTimesCircle style={{color: "var(--mui-error)", fontSize: "1rem"}} />}
         </ListItemIcon>
         <ListItemText
-          style={{color: props.isValid? "green" : "red"}}
+          style={{color: props.isValid? "green" : "var(--mui-error)"}}
           primary={props.text}
         />
       </ListItem>
