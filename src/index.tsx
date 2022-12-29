@@ -4,7 +4,6 @@ import {Provider} from "react-redux";
 import {createTheme, ThemeProvider, StyledEngineProvider} from "@mui/material";
 import App from "./App";
 import {store} from "./redux/store";
-import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
 
 const theme = createTheme({

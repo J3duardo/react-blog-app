@@ -1,7 +1,6 @@
 import {Suspense, lazy, useEffect} from "react";
 import {useDispatch} from "react-redux";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
-import {ToastContainer} from "react-toastify";
 import NavBar from "./components/NavBar";
 import Spinner from "./components/Spinner";
 import {UserData, setCurrentUser, logoutUser, setLoading} from "./redux/features/authSlice";
@@ -49,14 +48,6 @@ const App = () => {
           spinnerColor="black"
         />}
       >
-        <ToastContainer
-          position="bottom-left"
-          autoClose={5000}
-          hideProgressBar={true}
-          newestOnTop={false}
-          pauseOnHover={true}
-          pauseOnFocusLoss={true}
-        />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
