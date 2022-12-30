@@ -1,6 +1,7 @@
 import {configureStore} from "@reduxjs/toolkit";
 import {authReducer, UserData} from "./features/authSlice";
 import {layoutReducer} from "./features/layoutSlice";
+import {snackbarReducer} from "./features/snackbarSlice";
 
 export interface AuthState {
   auth: {
@@ -20,9 +21,17 @@ export interface LayoutState {
   }
 };
 
+export interface SnackbarState {
+  snackbar: {
+    open: boolean,
+    message: string
+  }
+};
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    layout: layoutReducer
+    layout: layoutReducer,
+    snackbar: snackbarReducer
   }
 });
