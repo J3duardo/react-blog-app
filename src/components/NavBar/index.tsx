@@ -58,7 +58,11 @@ const NavBar = () => {
   };
 
   return (
-    <AppBar component="nav" position="fixed" ref={navbarRef}>
+    <AppBar
+      ref={navbarRef}
+      style={{position: "fixed", zIndex: 1000000}}
+      component="nav"
+    >
       <Toolbar className="navbar__toolbar inner-wrapper">
         <Box className="navbar__items">
           {MENU_ITEMS__LEFT.map((el) => {

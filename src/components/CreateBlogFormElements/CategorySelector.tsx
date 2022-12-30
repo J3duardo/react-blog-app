@@ -52,7 +52,7 @@ export const CategorySelector = () => {
             {selected.map((category) => (
               <Chip
                 key={category}
-                style={{position: "relative", zIndex: 1000000}}
+                style={{position: "relative", zIndex: 100000}}
                 label={category}
                 onDelete={() => {
                   setCategories(prev => {
