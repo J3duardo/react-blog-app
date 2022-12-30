@@ -13,8 +13,9 @@ import { isEmptyField } from "../components/CreateBlogFormElements/isEmptyField"
 import { AuthState, LayoutState } from "../redux/store";
 import { generateFirebaseStorageErrorMsg } from "../utils/firebaseErrorMessages";
 import { db, storage } from "../firebase";
-import "../styles/createBlogPage.css";
 import { setOpen } from "../redux/features/snackbarSlice";
+import withAuthentication from "../HOC/withAuthentication";
+import "../styles/createBlogPage.css";
 
 export interface BlogFormFields {
   title: string;
@@ -59,7 +60,7 @@ const CreateBlog = () => {
   // Subir la imagen y crear el blog
   // al finalizar la subida
   /*---------------------------------*/
-  const onSubmitHandler = (values: BlogFormFields) => {
+  const onSubmitHandler = async (values: BlogFormFields) => {
     // Verificar si hay campos vacíos
     let isEmpty =
       isEmptyField(methods, "title") ||
@@ -74,7 +75,7 @@ const CreateBlog = () => {
     setLoading(true);
     setBackendError(null);
 
-    const storageRef = ref(storage, fileName);
+    const storageRef = ref(storage, `blogs/${values.title}/${fileName}`);
     const uploadTask = uploadBytesResumable(storageRef, image!);
 
     // Monitorear el progreso de la subida,
@@ -98,6 +99,7 @@ const CreateBlog = () => {
       },
       async () => {
         try {
+          // Obtener la url de la imagen al terminar la subida.
           const url = await getDownloadURL(uploadTask.snapshot.ref);
 
           const blogData = {
@@ -109,8 +111,10 @@ const CreateBlog = () => {
             createdAt: serverTimestamp()
           };
 
+          // Crear el blog en la base de datos
           const res = await addDoc(collection(db, "blogs"), blogData);
 
+          // Mostrar el snackbar al finalizar el proceso
           dispatch(setOpen({open: true, message: "Blog created successfully!"}));
           
           // Navegar a la página del blog
@@ -187,4 +191,4 @@ const CreateBlog = () => {
   )
 };
 
-export default CreateBlog;
+export default withAuthentication(CreateBlog);
