@@ -6,7 +6,7 @@ import { AuthError, createUserWithEmailAndPassword, signInWithEmailAndPassword, 
 import { auth } from "../firebase";
 import { LoginFormFields } from "../pages/Login";
 import { SignupFormFields } from "../pages/Signup";
-import { generateFirebaseErrorMsg } from "../utils/firebaseErrorMessages";
+import { generateFirebaseAuthErrorMsg } from "../utils/firebaseErrorMessages";
 import { setCurrentUser } from "../redux/features/authSlice";
 
 export interface AuthConfig {
@@ -99,7 +99,7 @@ function loginErrorHandler(
   setBackendError: Dispatch<SetStateAction<string | null>>
 ) {
   const authErr = error as AuthError;
-  const errMessage = generateFirebaseErrorMsg(authErr.code);
+  const errMessage = generateFirebaseAuthErrorMsg(authErr.code);
 
   if (errMessage.includes("email") && errMessage.includes("password")) {
     methods.setError(FormFields.EMAIL, {
@@ -140,7 +140,7 @@ function signupErrorHandler(
   setBackendError: Dispatch<SetStateAction<string | null>>
 ) {
   const authErr = error as AuthError;
-  const errMessage = generateFirebaseErrorMsg(authErr.code);
+  const errMessage = generateFirebaseAuthErrorMsg(authErr.code);
 
   if (errMessage.toLowerCase().includes("email")) {
     return methods.setError(FormFields.EMAIL, {

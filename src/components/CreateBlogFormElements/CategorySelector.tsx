@@ -16,7 +16,11 @@ const TEST_CATEGORIES = (amount: number) => {
   return categoryArr;
 };
 
-export const CategorySelector = () => {
+interface Props {
+  disabled: boolean;
+};
+
+export const CategorySelector = ({disabled}: Props) => {
   const [categories, setCategories] = useState<string[]>([]);
 
   const {register, formState: {errors}} = useFormContext();
@@ -44,6 +48,7 @@ export const CategorySelector = () => {
         label="Select categories"
         labelId="categories-selector"
         value={categories}
+        disabled={disabled}
         MenuProps={{
           style: {width: "100%", maxHeight: "250px"}
         }}

@@ -7,11 +7,12 @@ import { BsCardImage } from "react-icons/bs";
 
 interface Props {
   imagePreview: string | null;
-  setImage: Dispatch<SetStateAction<Blob | null>>
+  setImage: Dispatch<SetStateAction<File | null>>
+  disabled: boolean;
 };
 
-export const FileInput = ({imagePreview, setImage}: Props) => {
-  const fileInputRef = useRef<null | HTMLInputElement>(null);
+export const FileInput = ({imagePreview, setImage, disabled}: Props) => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const {register, setValue, formState: {errors}} = useFormContext();
 
@@ -58,10 +59,13 @@ export const FileInput = ({imagePreview, setImage}: Props) => {
           border: "1px solid grey",
           borderRadius: "5px",
           backgroundColor: isInvalid ? "rgba(255,0,0,0.12)" : "transparent",
-          cursor: "pointer"
+          cursor: disabled ? "default" : "pointer"
         }}
         htmlFor="image"
-        onClick={(e) => onClickHandler(e)}
+        onClick={(e) => {
+          if (disabled) return null;
+          onClickHandler(e);
+        }}
       >
         {imagePreview ? "Change image" : "Choose image"}
         <BsCardImage style={{marginLeft: "var(--spacing)", fontSize: "24px"}} />
@@ -71,6 +75,7 @@ export const FileInput = ({imagePreview, setImage}: Props) => {
         style={{display: "none"}}
         type="file"
         id="image"
+        disabled={disabled}
         accept="image/jpeg, image/jpg, image/png"
         {...rest}
       />
@@ -83,6 +88,7 @@ export const FileInput = ({imagePreview, setImage}: Props) => {
           <FaTimesCircle
             style={{
               position: "absolute",
+              display: disabled ? "none" : "block",
               top: "var(--spacing-sm)",
               right: "var(--spacing-sm)",
               fontSize: "24px",
