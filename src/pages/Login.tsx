@@ -7,6 +7,7 @@ import {AiOutlineLogin} from "react-icons/ai";
 import {EmailField, PasswordField} from "../components/AuthFormsElements";
 import {LayoutState} from "../redux/store";
 import {AuthConfig, authHandler} from "../utils/auth";
+import withoutAuthentication from "../HOC/withoutAuthentication";
 import "../styles/authForms.css";
 
 export interface LoginFormFields {
@@ -84,4 +85,4 @@ const Login = () => {
   )
 };
 
-export default Login;
+export default withoutAuthentication(Login);

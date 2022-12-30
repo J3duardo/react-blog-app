@@ -7,6 +7,7 @@ import {AiOutlineLogin} from "react-icons/ai";
 import {GenericTextField, EmailField, PasswordField, PasswordConfirmField} from "../components/AuthFormsElements";
 import {LayoutState} from "../redux/store";
 import {AuthConfig, authHandler} from "../utils/auth";
+import withoutAuthentication from "../HOC/withoutAuthentication";
 import "../styles/authForms.css";
 
 export interface SignupFormFields {
@@ -102,4 +103,4 @@ const Signup = () => {
   )
 };
 
-export default Signup;
+export default withoutAuthentication(Signup);
