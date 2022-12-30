@@ -3,6 +3,7 @@ import {useDispatch} from "react-redux";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Spinner from "./components/Spinner";
+import GenericSnackbar from "./components/GenericSnackbar";
 import {UserData, setCurrentUser, logoutUser, setLoading} from "./redux/features/authSlice";
 import {auth} from "./firebase";
 
@@ -58,6 +59,7 @@ const App = () => {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
+      <GenericSnackbar />
     </BrowserRouter>
   );
 };
