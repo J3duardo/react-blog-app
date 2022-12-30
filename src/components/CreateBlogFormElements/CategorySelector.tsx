@@ -60,6 +60,7 @@ export const CategorySelector = ({disabled}: Props) => {
                 style={{position: "relative", zIndex: 100000}}
                 label={category}
                 onDelete={() => {
+                  if (disabled) return null;
                   setCategories(prev => {
                     return [...prev].filter(el => el !== category)
                   })
