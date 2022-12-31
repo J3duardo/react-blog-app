@@ -7,13 +7,13 @@ import { useSelector } from "react-redux";
 import { AiOutlinePlus } from "react-icons/ai";
 import { TiCancel } from "react-icons/ti";
 import { getDownloadURL, ref, StorageError, uploadBytesResumable, UploadTask } from "firebase/storage";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { addDoc, serverTimestamp } from "firebase/firestore";
 import { BlogTitleField, CategorySelector, DescriptionField, FileInput } from "../components/CreateBlogFormElements";
 import LinearProgressBar from "../components/LinearProgressBar";
 import { isEmptyField } from "../components/CreateBlogFormElements/isEmptyField";
 import { AuthState, LayoutState } from "../redux/store";
 import { generateFirebaseStorageErrorMsg } from "../utils/firebaseErrorMessages";
-import { db, storage } from "../firebase";
+import { blogsCollection, storage } from "../firebase";
 import { setOpen } from "../redux/features/snackbarSlice";
 import withAuthentication from "../HOC/withAuthentication";
 import "../styles/createBlogPage.css";
@@ -139,7 +139,7 @@ const CreateBlog = () => {
           };
 
           // Crear el blog en la base de datos
-          const res = await addDoc(collection(db, "blogs"), blogData);
+          const res = await addDoc(blogsCollection, blogData);
 
           // Mostrar el snackbar al finalizar el proceso
           dispatch(setOpen({open: true, message: "Blog created successfully!"}));
