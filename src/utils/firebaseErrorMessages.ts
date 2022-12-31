@@ -53,10 +53,10 @@ export const generateFirebaseStorageErrorMsg = (errorCode: string) => {
       errMessage = "Storage bucket not found or not properly configured."
       break;
     case "storage/unauthenticated":
-      errMessage = "Unauthorized. Please, log in to your account and try again."
+      errMessage = "You must be logged in to perform the requested action."
       break;
     case "storage/unauthorized":
-      errMessage = "You are not authorized to perform the desired action."
+      errMessage = "You are not allowed to perform the requested action."
       break;
     case "storage/retry-limit-exceeded":
       errMessage = "Too many attempts. Try again later."
