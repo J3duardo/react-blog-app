@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { AiOutlinePlus } from "react-icons/ai";
-import { getDownloadURL, ref, StorageError, uploadBytesResumable } from "firebase/storage";
+import { TiCancel } from "react-icons/ti";
+import { getDownloadURL, ref, StorageError, uploadBytesResumable, UploadTask } from "firebase/storage";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { BlogTitleField, CategorySelector, DescriptionField, FileInput } from "../components/CreateBlogFormElements";
 import LinearProgressBar from "../components/LinearProgressBar";
@@ -30,6 +31,7 @@ const CreateBlog = () => {
   const {user} = useSelector((state: AuthState) => state.auth);
   const {pagePadding} = useSelector((state: LayoutState) => state.layout);
   
+  const [currentUploadTask, setCurrentUploadTask] = useState<UploadTask | null>(null);
   const [image, setImage] = useState<File | null>(null);
   const [fileName, setFileName] = useState<string>("");
   const [filePreview, setFilePreview] = useState<string | null>(null);
@@ -57,6 +59,18 @@ const CreateBlog = () => {
 
 
   /*---------------------------------*/
+  // Cancelar la subida de la imagen
+  /*---------------------------------*/
+  const cancelUploadHandler = () => {
+    if(currentUploadTask) {
+      currentUploadTask.cancel();
+      setLoading(false);
+      setUploadProgress(null);
+    }
+  };
+
+
+  /*---------------------------------*/
   // Subir la imagen y crear el blog
   // al finalizar la subida
   /*---------------------------------*/
@@ -72,12 +86,24 @@ const CreateBlog = () => {
       return null;
     };
 
+    // Permitir imágenes de máximo 10MB
+    if(image!.size > 10 * 1024 * 1024) {
+      return methods.setError("image", {
+        type: "imageSize",
+        message: "The image size must be less than 10MB"
+      });
+    };
+
     setLoading(true);
     setBackendError(null);
 
     const path = `blogs/${user?.uid}/${values.title}/${Date.now()}-${fileName}`;
     const storageRef = ref(storage, path);
     const uploadTask = uploadBytesResumable(storageRef, image!);
+
+    // Almacenar la tarea de subida en el state
+    // para poder cancelarla desde el cancel handler.
+    setCurrentUploadTask(uploadTask);
 
     // Monitorear el progreso de la subida,
     // manejar errores generados al subir el archivo
@@ -96,7 +122,7 @@ const CreateBlog = () => {
         setBackendError(msg);
         setUploadProgress(null);
         setLoading(false);
-
+        window.scrollTo({top: 0, behavior: "smooth"});
       },
       async () => {
         try {
@@ -130,6 +156,7 @@ const CreateBlog = () => {
         } finally {
           setLoading(false);
           setUploadProgress(null);
+          window.scrollTo({top: 0, behavior: "smooth"});
         };
       }
     );
@@ -175,17 +202,30 @@ const CreateBlog = () => {
 
           <LinearProgressBar uploadProgress={uploadProgress} />
           
-          <Button
-            className="create-blog__button"
-            variant="outlined"
-            type="submit"
-            endIcon={<AiOutlinePlus />}
-            disabled={loading}
-          >
-            {!loading && !uploadProgress && "Create blog"}
-            {loading && uploadProgress! < 100 && "Uploading blog..."}
-            {loading && uploadProgress === 100 && "Finishing upload..."}
-          </Button>
+          <Box style={{display: "flex", gap: "var(--spacing)"}}>
+            <Button
+              className="create-blog__button"
+              variant="outlined"
+              type="submit"
+              endIcon={<AiOutlinePlus />}
+              disabled={loading}
+            >
+              {!loading && !uploadProgress && "Create blog"}
+              {loading && uploadProgress! < 100 && "Uploading blog..."}
+              {loading && uploadProgress === 100 && "Finishing upload..."}
+            </Button>
+            <Button
+              style={{display: uploadProgress && uploadProgress < 100 ? "flex" : "none"}}
+              className="create-blog__button"
+              variant="outlined"
+              color="error"
+              type="button"
+              endIcon={<TiCancel />}
+              onClick={cancelUploadHandler}
+            >
+              Cancel
+            </Button>
+          </Box>
         </form>
       </FormProvider>
     </Box>
