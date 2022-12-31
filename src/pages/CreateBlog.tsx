@@ -75,7 +75,8 @@ const CreateBlog = () => {
     setLoading(true);
     setBackendError(null);
 
-    const storageRef = ref(storage, `blogs/${values.title}/${fileName}`);
+    const path = `blogs/${user?.uid}/${values.title}/${Date.now()}-${fileName}`;
+    const storageRef = ref(storage, path);
     const uploadTask = uploadBytesResumable(storageRef, image!);
 
     // Monitorear el progreso de la subida,
