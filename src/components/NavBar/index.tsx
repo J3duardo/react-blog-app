@@ -2,6 +2,7 @@ import {useState, useEffect, useRef, MutableRefObject} from "react";
 import {NavLink, useNavigate} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
 import {AppBar, Toolbar, Button, Box} from "@mui/material";
+import VerificationWarning from "./VerificationWarning";
 import Spinner from "../Spinner";
 import useResizeObserver from "../../hooks/useResizeObserver";
 import {AuthState} from "../../redux/store";
@@ -28,6 +29,7 @@ const NavBar = () => {
   const navigate = useNavigate();
 
   const [loggingOut, setLoggingOut] = useState(false);
+  const [showVerificationWarning, setShowVerificationWarning] = useState(true);
 
   // Determinar el height del navbar
   const {elemHeight: navbarHeight} = useResizeObserver({
@@ -152,6 +154,11 @@ const NavBar = () => {
           </Box>
         }
       </Toolbar>
+
+      {isAuth && !user?.emailVerified && showVerificationWarning &&
+        <VerificationWarning setShowWarning={setShowVerificationWarning} />
+      }
+
     </AppBar>
   )
 }
