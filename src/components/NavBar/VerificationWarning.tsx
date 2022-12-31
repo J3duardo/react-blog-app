@@ -2,9 +2,10 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { Box, Button, /*IconButton,*/ Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
 // import { FaTimesCircle } from "react-icons/fa";
-import { sendEmailVerification } from "firebase/auth";
+import { AuthError, sendEmailVerification } from "firebase/auth";
 import { setOpen } from "../../redux/features/snackbarSlice";
 import { auth } from "../../firebase";
+import { generateFirebaseAuthErrorMsg } from "../../utils/firebaseErrorMessages";
 
 interface Props {
   setShowWarning: Dispatch<SetStateAction<boolean>>
@@ -21,19 +22,24 @@ const VerificationWarning = ({setShowWarning}: Props) => {
       setLoading(true);
       await sendEmailVerification(auth.currentUser!);
       setLoading(false);
-    } catch (error: any) {
-      console.log(`Error sending verification email`, error);
 
       dispatch(setOpen({
         open: true,
-        message: "Error sending verification email. Try again."
-      }))
-    };
+        message: "Verification email sent. Check your inbox."
+      }));
 
-    dispatch(setOpen({
-      open: true,
-      message: "Verification email sent. Check your inbox."
-    }))
+    } catch (error: unknown) {
+      const authError = error as AuthError;
+      const code = authError.code;
+      const message = generateFirebaseAuthErrorMsg(code);
+
+      dispatch(setOpen({
+        open: true,
+        message
+      }));
+
+      setLoading(false);
+    };
   };
 
   return (

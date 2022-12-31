@@ -23,7 +23,7 @@ export const generateFirebaseAuthErrorMsg = (errorCode: string) => {
       errMessage = "User not found or deleted.";
       break;
     case "auth/too-many-requests":
-      errMessage = "Too many failed attempts. Try again later.";
+      errMessage = "Too many attempts. Try again later.";
       break;
     case "auth/user-disabled":
       errMessage = "The user account was disabled by an administrator."
