@@ -15,7 +15,7 @@ const BlogCard = ({blog}: Props) => {
   const navigate = useNavigate();
 
   return (
-    <Box className="blog-card">
+    <Box className="blog-card card-shadow">
       <Box className="blog-card__img-wrapper">
         <img
           className="blog-card__img"

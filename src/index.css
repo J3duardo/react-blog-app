@@ -29,6 +29,7 @@
   --bg-card-color: var(--bg-card-light);
 
   --mui-error: #d32f2f;
+  --mui-primary: #1976D2;
 }
 
 body {
@@ -59,4 +60,23 @@ body {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.border-normal {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.border-primary {
+  border: 1px solid var(--mui-primary);
+  border-radius: 5px;
+}
+
+.border-error {
+  border: 1px solid var(--mui-error);
+  border-radius: 5px;
+}
+
+.card-shadow {
+  box-shadow: 0 0 10px 3px #ccc;
 }

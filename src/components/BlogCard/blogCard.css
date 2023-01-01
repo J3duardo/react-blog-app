@@ -4,7 +4,9 @@
   justify-content: space-between;
   align-items: stretch;
   gap: var(--spacing);
-  height: 250px;
+  height: 300px;
+  padding: var(--spacing);
+  border-radius: 5px;
 }
 
 .blog-card__img-wrapper {
@@ -18,6 +20,8 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
 .blog-card__content {
