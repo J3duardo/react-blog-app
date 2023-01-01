@@ -1,0 +1,19 @@
+.not-found {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing);
+  height: 100vh;
+}
+
+.not-found__title {
+  margin-bottom: 0;
+  text-align: center;
+  font-size: var(--heading-1);
+  color: var(--text-grey);
+}
+
+.not-found__icon {
+  font-size: 9rem;
+}
