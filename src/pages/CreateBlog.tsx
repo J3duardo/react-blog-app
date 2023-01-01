@@ -6,7 +6,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { AiOutlinePlus } from "react-icons/ai";
 import { TiCancel } from "react-icons/ti";
-import { getDownloadURL, ref, StorageError, uploadBytesResumable, UploadTask } from "firebase/storage";
+import { deleteObject, getDownloadURL, ref, StorageError, uploadBytes, uploadBytesResumable, UploadTask } from "firebase/storage";
 import { addDoc, serverTimestamp } from "firebase/firestore";
 import { BlogTitleField, CategorySelector, DescriptionField, FileInput } from "../components/CreateBlogFormElements";
 import LinearProgressBar from "../components/LinearProgressBar";
@@ -16,6 +16,7 @@ import { generateFirebaseStorageErrorMsg } from "../utils/firebaseErrorMessages"
 import { blogsCollection, storage } from "../firebase";
 import { setOpen } from "../redux/features/snackbarSlice";
 import withAuthentication from "../HOC/withAuthentication";
+import { imageResizer } from "../utils/imgResizer";
 import "../styles/createBlogPage.css";
 
 export interface BlogFormFields {
@@ -33,7 +34,6 @@ const CreateBlog = () => {
   
   const [currentUploadTask, setCurrentUploadTask] = useState<UploadTask | null>(null);
   const [image, setImage] = useState<File | null>(null);
-  const [fileName, setFileName] = useState<string>("");
   const [filePreview, setFilePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
@@ -49,8 +49,6 @@ const CreateBlog = () => {
     if(image) {
       methods.setValue("image", image);
       const objectUrl = URL.createObjectURL(image);
-      const imgName = `${user?.uid}-${Date.now()}-${image.name}`;
-      setFileName(imgName);
       setFilePreview(objectUrl);
     } else {
       setFilePreview(null);
@@ -97,9 +95,26 @@ const CreateBlog = () => {
     setLoading(true);
     setBackendError(null);
 
-    const path = `blogs/${user?.uid}/${values.title}/${Date.now()}-${fileName}`;
-    const storageRef = ref(storage, path);
-    const uploadTask = uploadBytesResumable(storageRef, image!);
+    // Generar el nombre base de la imagen.
+    // Limpiar los espacios vacíos y la palabra "preview" del nombre original.
+    const imageName = `${Date.now()}-${image?.name.replaceAll(" ", "-").replaceAll("preview", "").toLowerCase()}`;
+
+    // Paths de la imagen principal y del thumbnail
+    const mainImagePath = `blogs/${user?.uid}/${values.title}/${imageName}`;
+    const previewImagePath = `blogs/${user?.uid}/${values.title}/preview-${imageName}`;
+
+    // Referencias del storage de la imagen y el thumbnail
+    const mainImageStorageRef = ref(storage, mainImagePath);
+    const previewImageStorageRef = ref(storage, previewImagePath);
+
+    // Generar el thumbnail de la imagen (versión de 600x600 px de la imagen principal)
+    const thumbnail = await imageResizer(image!);
+
+    // Subir el thumbnail al bucket
+    const thumbnailUpload = await uploadBytes(previewImageStorageRef, thumbnail);
+
+    // Crear el task de upload de la imagen principal
+    const uploadTask = uploadBytesResumable(mainImageStorageRef, image!);
 
     // Almacenar la tarea de subida en el state
     // para poder cancelarla desde el cancel handler.
@@ -123,18 +138,29 @@ const CreateBlog = () => {
         setUploadProgress(null);
         setLoading(false);
         window.scrollTo({top: 0, behavior: "smooth"});
+
+        // Eliminar el thumbnail en caso de error
+        deleteObject(previewImageStorageRef);
       },
       async () => {
         try {
           // Obtener la url de la imagen al terminar la subida.
           const url = await getDownloadURL(uploadTask.snapshot.ref);
 
+          // Obtener la url del thumbnail
+          const thumbUrl = await getDownloadURL(thumbnailUpload.ref);
+
+          // Autor del blog excluyendo el email
+          const blogAuthor = {...user};
+          delete blogAuthor.email;
+
           const blogData = {
-            author: user,
+            author: blogAuthor,
             title: values.title,
             categories: values.categories,
             description: values.description,
             imageUrl: url,
+            thumbUrl,
             createdAt: serverTimestamp()
           };
 
@@ -152,6 +178,11 @@ const CreateBlog = () => {
           const code = storageError.code;
           const errMsg = generateFirebaseStorageErrorMsg(code);
           setBackendError(errMsg);
+
+          // Eliminar la imagen principal y el thumbnail
+          // en caso de error al crear el documento en la base de datos.
+          deleteObject(mainImageStorageRef);
+          deleteObject(previewImageStorageRef);
 
         } finally {
           setLoading(false);
