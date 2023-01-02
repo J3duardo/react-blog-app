@@ -20,7 +20,7 @@ export const DescriptionField = ({disabled}: Props) => {
       fullWidth
       multiline
       minRows={3}
-      maxRows={6}
+      maxRows={9}
       disabled={disabled}
       InputProps={{disableUnderline: true}}
       InputLabelProps={{error: isInvalid}}
@@ -30,7 +30,7 @@ export const DescriptionField = ({disabled}: Props) => {
       {...register("description", {
         required: {value: true, message: "The description is required"},
         minLength: {value: 6, message: "The description must contain at least 6 characters"},
-        maxLength: {value: 500, message: "The description must contain maximum 500 characters"}
+        maxLength: {value: 5000, message: "The description must contain maximum 500 characters"}
       })}
     />
   )
