@@ -10,6 +10,7 @@
 
   /* Variables de espaciado */
   --line-height: 1.5;
+  --line-height-titles: 1.2;
   --baseline: calc(var(--paragraph) * var(--line-height));
   --spacing: calc(var(--baseline) * 0.5);
   --spacing-sm: calc(0.75 * var(--spacing));
@@ -30,6 +31,7 @@
 
   --mui-error: #d32f2f;
   --mui-primary: #1976D2;
+  --mui-border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 body {
@@ -47,6 +49,20 @@ body {
 .inner-wrapper {
   width: 100%;
   max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.inner-wrapper--md {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.inner-wrapper--sm {
+  width: 100%;
+  max-width: 750px;
   margin: 0 auto;
   padding: 0 24px;
 }

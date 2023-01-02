@@ -244,7 +244,7 @@ const CreateBlog = () => {
             >
               {!loading && !uploadProgress && "Create blog"}
               {loading && uploadProgress! < 100 && "Uploading blog..."}
-              {loading && uploadProgress === 100 && "Finishing upload..."}
+              {loading && uploadProgress === 100 && "Finishing..."}
             </Button>
             <Button
               style={{display: uploadProgress && uploadProgress < 100 ? "flex" : "none"}}
