@@ -22,7 +22,11 @@ const BlogMetadata = ({avatar, name, date}: Props) => {
         {name}
       </Typography>
       <BsDot />
-      <Typography className="blog-card__metadata__date" variant="subtitle1">
+      <Typography
+        className="blog-card__metadata__date"
+        variant="subtitle1"
+        title={dateFormatter(date, "MM/DD/YYYY - hh:mm a")}
+      >
         {dateFormatter(date, "MM/DD/YYYY")}
       </Typography>
     </Box>
