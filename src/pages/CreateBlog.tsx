@@ -161,6 +161,7 @@ const CreateBlog = () => {
             description: values.description,
             imageUrl: url,
             thumbUrl,
+            imageName,
             createdAt: serverTimestamp()
           };
 

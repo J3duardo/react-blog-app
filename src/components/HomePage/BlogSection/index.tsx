@@ -1,4 +1,4 @@
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Timestamp } from "firebase/firestore";
 import BlogCard from "../../BlogCard";
 import BlogCardSkeleton from "../../BlogCard/BlogCardSkeleton";
@@ -14,6 +14,7 @@ export interface Blog {
   imageUrl: string;
   thumbUrl: string;
   author: BlogAuthor;
+  imageName: string;
   createdAt: Timestamp
 };
 
@@ -39,7 +40,7 @@ const BlogSection = ({currentUser, blogs, loading}: Props) => {
 
       {!loading &&
         <Box className="home-page__blog-grid">
-          {blogs.map(blog => <BlogCard key={blog.id} blog={blog} />)}
+          {blogs.map(blog => <BlogCard key={blog.id} blog={blog} user={currentUser} />)}
         </Box>
       }
     </Box>

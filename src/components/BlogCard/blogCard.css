@@ -25,11 +25,21 @@
 }
 
 .blog-card__content {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   flex-basis: 100%;
   max-width: 100%;
+}
+
+.blog-card__author-actions {
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  right: 0;
 }
 
 .blog-card__categories {
