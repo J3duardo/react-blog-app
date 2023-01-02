@@ -16,7 +16,7 @@
 }
 
 .home-page__blog-section {
-  flex-basis: 60%;
+  flex-basis: 65%;
   flex-grow: 1;
 }
 
@@ -32,7 +32,7 @@
 }
 
 .home-page__most-popular-section {
-  flex-basis: 40%;
+  flex-basis: 35%;
   flex-grow: 1;
   border: 1px solid grey;
 }

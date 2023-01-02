@@ -28,6 +28,7 @@
   --text-color: var(--text-color-light);
   --bg-color: var(--bg-light);
   --bg-card-color: var(--bg-card-light);
+  --shadow-y: 0px 6px 10px 0px rgb(0,0,0,0.6);
 
   --mui-error: #d32f2f;
   --mui-primary: #1976D2;
@@ -49,6 +50,13 @@ body {
 .inner-wrapper {
   width: 100%;
   max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.inner-wrapper--xl {
+  width: 100%;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 0 24px;
 }
