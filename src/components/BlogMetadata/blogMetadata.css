@@ -1,0 +1,11 @@
+.blog-card__metadata {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.blog-card__metadata__avatar {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}
