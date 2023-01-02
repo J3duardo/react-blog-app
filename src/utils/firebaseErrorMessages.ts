@@ -73,3 +73,33 @@ export const generateFirebaseStorageErrorMsg = (errorCode: string) => {
 
   return errMessage;
 };
+
+
+export const generateFirestoreErrorMsg = (code: string) => {
+  console.log(code);
+
+  const errCode = code.toLowerCase();
+  let errMessage: string;
+
+  switch(errCode) {
+    case "not-found":
+      errMessage = "Document not found or deleted.";
+      break;
+    case "unauthenticated":
+      errMessage = "You must be logged in to perform this action.";
+      break;
+    case "permission-denied":
+      errMessage = "You are not authorized to perform this action.";
+      break;
+    case "unavailable":
+      errMessage = "Service unavailable. Try again later.";
+      break;
+    case "internal":
+      errMessage = "Internal server error.";
+      break;
+    default:
+      errMessage = "An unknown error occurred. Try again later.";
+  };
+
+  return errMessage;
+};
