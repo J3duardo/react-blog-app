@@ -1,19 +1,19 @@
 import { useState } from "react";
-import { Box, Typography, Chip, Button, IconButton } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Box, Typography, Chip, Button, IconButton, Divider } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
-import dayjs from "dayjs";
-import { Blog } from "../HomePage/BlogSection";
-import { UserData } from "../../redux/features/authSlice";
 import "./blogCard.css";
-import { db, storage } from "../../firebase";
 import { deleteObject, ref, StorageError } from "firebase/storage";
 import { deleteDoc, doc, FirestoreError } from "firebase/firestore";
 import { AuthError } from "firebase/auth";
-import { setOpen } from "../../redux/features/snackbarSlice";
-import { generateFirebaseAuthErrorMsg, generateFirebaseStorageErrorMsg, generateFirestoreErrorMsg } from "../../utils/firebaseErrorMessages";
+import { Blog } from "../HomePage/BlogSection";
+import BlogMetadata from "../BlogMetadata";
 import ConfirmModal from "../ConfirmModal";
+import { UserData } from "../../redux/features/authSlice";
+import { setOpen } from "../../redux/features/snackbarSlice";
+import { db, storage } from "../../firebase";
+import { generateFirebaseAuthErrorMsg, generateFirebaseStorageErrorMsg, generateFirestoreErrorMsg } from "../../utils/firebaseErrorMessages";
 
 interface Props {
   blog: Blog;
@@ -22,7 +22,6 @@ interface Props {
 
 const BlogCard = ({blog, user}: Props) => {
   const {id, title, description, author, thumbUrl, categories, imageName, createdAt} = blog;
-  const blogDate = dayjs(createdAt.toDate()).format("MM/DD/YYYY - hh:mm a");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -106,32 +105,38 @@ const BlogCard = ({blog, user}: Props) => {
       </Box>
 
       <Box className="blog-card__content" textAlign="left">
-        {/* Botones para editar y borrar el post */}
-        {/* Sólo se muestran al autor del post */}
-        {!!user && user.uid === author.uid &&
-          <Box className="blog-card__author-actions">
-            <IconButton size="small" disabled={deleting}>
-              <AiOutlineEdit />
-            </IconButton>
-            <IconButton
-              size="small"
-              disabled={deleting}
-              onClick={() => setOpenDeleteModal(true)}
-            >
-              <AiOutlineDelete />
-            </IconButton>
-          </Box>
-        }
+        <Box className="blog-card__title-wrapper">
+          <Typography className="blog-card__title" variant="h6">
+            <Link to={`/blog/${id}`}>{title}</Link>
+          </Typography>
 
-        <Typography variant="h6" fontWeight={600}>
-          {title}
-        </Typography>
-        <Typography>
-          By: {author.displayName}
-        </Typography>
-        <Typography style={{marginBottom: "var(--spacing)"}} variant="subtitle1">
-          {blogDate}
-        </Typography>
+          {/* Botones para editar y borrar el post */}
+          {/* Sólo se muestran al autor del post */}
+          {!!user && user.uid === author.uid &&
+            <Box className="blog-card__author-actions">
+              <IconButton size="small" disabled={deleting}>
+                <AiOutlineEdit />
+              </IconButton>
+              <IconButton
+                size="small"
+                disabled={deleting}
+                onClick={() => setOpenDeleteModal(true)}
+              >
+                <AiOutlineDelete />
+              </IconButton>
+            </Box>
+          }
+        </Box>
+
+        <Divider style={{margin: "5px 0"}} />
+        
+        <BlogMetadata
+          name={author.displayName}
+          avatar={author.photoURL}
+          date={createdAt}
+        />
+
+        <Divider style={{margin: "5px 0 var(--spacing) 0"}} />
 
         <Box className="blog-card__categories">
           {categories.slice(0, 3).map(category => {
@@ -146,6 +151,8 @@ const BlogCard = ({blog, user}: Props) => {
             )
           })}
         </Box>
+
+        <Divider style={{margin: "5px 0"}} />
 
         <Box className="blog-card__description">
           <Box className="blog-card__description-overlay" />
