@@ -20,8 +20,8 @@ const VerificationWarning = ({setShowWarning}: Props) => {
   const onClickHandler = async () => {
     try {
       setLoading(true);
-      await sendEmailVerification(auth.currentUser!);
-      setLoading(false);
+
+      await sendEmailVerification(auth.currentUser!, {url: window.location.origin});
 
       dispatch(setOpen({
         open: true,
@@ -38,8 +38,9 @@ const VerificationWarning = ({setShowWarning}: Props) => {
         message
       }));
 
+    } finally {
       setLoading(false);
-    };
+    }
   };
 
   return (
