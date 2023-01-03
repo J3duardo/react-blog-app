@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { Box, Typography, Chip, Button, IconButton, Divider, Tooltip } from "@mui/material";
+import { Box, Typography, Button, IconButton, Divider, Tooltip } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
-import "./blogCard.css";
-import { Blog } from "../HomePage/BlogSection";
+import CategoryChip from "./CategoryChip";
 import BlogMetadata from "../BlogMetadata";
 import ConfirmModal from "../ConfirmModal";
+import { Blog } from "../HomePage/BlogSection";
 import { UserData } from "../../redux/features/authSlice";
 import { deleteBlog, DeleteBlogConfig } from "../../utils/blogCrudHandlers";
+import "./blogCard.css";
 
 interface Props {
   blog: Blog;
@@ -102,15 +103,7 @@ const BlogCard = ({blog, user}: Props) => {
 
         <Box className="blog-card__categories">
           {categories.slice(0, 3).map(category => {
-            return (
-              <Chip
-                key={category}
-                variant="filled"
-                label={category}
-                size="small"
-                color="primary"
-              />
-            )
+            return <CategoryChip key={category} category={category}/>
           })}
         </Box>
 

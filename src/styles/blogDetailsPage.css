@@ -69,6 +69,20 @@
   text-transform: capitalize;
 }
 
+.blog-detail__categories {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-bottom: var(--spacing);
+}
+
+.blog-detail__categories > * {
+  flex-shrink: 0;
+}
+
 .blog-detail__title {
   margin-bottom: var(--spacing);
 }

@@ -15,6 +15,7 @@ import { deleteBlog, DeleteBlogConfig } from "../utils/blogCrudHandlers";
 import { AuthState, LayoutState } from "../redux/store";
 import { auth, blogsCollection } from "../firebase";
 import "../styles/blogDetailsPage.css";
+import CategoryChip from "../components/BlogCard/CategoryChip";
 
 const BlogDetails = () => {
   const {blogId} = useParams();
@@ -184,6 +185,12 @@ const BlogDetails = () => {
         </Box>
 
         <Divider style={{margin: "var(--spacing) 0"}} />
+
+        <Box className="blog-detail__categories">
+          {blogDetails!.categories.map(category => {
+            return <CategoryChip key={category} category={category} />
+          })}
+        </Box>
 
         <Typography className="blog-detail__title" variant="h3">
           {blogDetails!.title}
