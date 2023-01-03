@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Typography, Chip, Button, IconButton, Divider } from "@mui/material";
+import { Box, Typography, Chip, Button, IconButton, Divider, Tooltip } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
@@ -114,16 +114,24 @@ const BlogCard = ({blog, user}: Props) => {
           {/* Sólo se muestran al autor del post */}
           {!!user && user.uid === author.uid &&
             <Box className="blog-card__author-actions">
-              <IconButton size="small" disabled={deleting}>
-                <AiOutlineEdit />
-              </IconButton>
-              <IconButton
-                size="small"
-                disabled={deleting}
-                onClick={() => setOpenDeleteModal(true)}
-              >
-                <AiOutlineDelete />
-              </IconButton>
+              <Tooltip title="Edit blog" placement="right">
+                <IconButton
+                  size="small"
+                  disabled={deleting}
+                  onClick={() => navigate(`/blog/create?editBlog=${id}`)}
+                >
+                  <AiOutlineEdit />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Delete blog" placement="right">
+                <IconButton
+                  size="small"
+                  disabled={deleting}
+                  onClick={() => setOpenDeleteModal(true)}
+                >
+                  <AiOutlineDelete />
+                </IconButton>
+              </Tooltip>
             </Box>
           }
         </Box>
