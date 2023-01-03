@@ -1,0 +1,25 @@
+.image-dialog__content {
+  position: relative;
+  max-height: 90vh;
+}
+
+.image-dialog__img-wrapper {
+  display: flex;
+  justify-content: center;
+  width: auto;
+  height: 100%;
+}
+
+.image-dialog__close-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+.image-dialog__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
