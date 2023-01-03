@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Box, Chip, MenuItem, FormControl, InputLabel, FormHelperText} from "@mui/material";
 import Select, {SelectChangeEvent} from "@mui/material/Select";
 import {useFormContext} from "react-hook-form";
@@ -18,14 +18,23 @@ const TEST_CATEGORIES = (amount: number) => {
 
 interface Props {
   disabled: boolean;
+  updatedCategories: string[];
+  editMode: boolean;
 };
 
-export const CategorySelector = ({disabled}: Props) => {
+export const CategorySelector = ({disabled, updatedCategories, editMode}: Props) => {
   const [categories, setCategories] = useState<string[]>([]);
 
   const {register, formState: {errors}} = useFormContext();
 
   const isInvalid = !!errors.categories;
+
+  // Actualizar el state de las categorías cuando está en modo edición
+  useEffect(() => {
+    if(editMode) {
+      setCategories(updatedCategories);
+    };
+  }, [updatedCategories, editMode]);
 
   const onChangeHandler = (e: SelectChangeEvent<typeof categories>) => {
     const {value} = e.target;

@@ -1,21 +1,23 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Box, Typography, Button, Divider, Alert } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { AiOutlinePlus } from "react-icons/ai";
 import { TiCancel } from "react-icons/ti";
 import { deleteObject, getDownloadURL, ref, StorageError, uploadBytes, uploadBytesResumable, UploadTask } from "firebase/storage";
-import { addDoc, serverTimestamp } from "firebase/firestore";
+import { addDoc, doc, FirestoreError, serverTimestamp, setDoc } from "firebase/firestore";
+
 import { BlogTitleField, CategorySelector, DescriptionField, FileInput } from "../components/CreateBlogFormElements";
 import LinearProgressBar from "../components/LinearProgressBar";
 import { isEmptyField } from "../components/CreateBlogFormElements/isEmptyField";
 import { AuthState, LayoutState } from "../redux/store";
-import { generateFirebaseStorageErrorMsg } from "../utils/firebaseErrorMessages";
+import { generateFirebaseStorageErrorMsg, generateFirestoreErrorMsg } from "../utils/firebaseErrorMessages";
 import { blogsCollection, storage } from "../firebase";
 import { setOpen } from "../redux/features/snackbarSlice";
 import withAuthentication from "../HOC/withAuthentication";
+import useBlogDefaultValues from "../hooks/useBlogDefaultValues";
 import { imageResizer } from "../utils/imgResizer";
 import "../styles/createBlogPage.css";
 
@@ -29,17 +31,43 @@ export interface BlogFormFields {
 const CreateBlog = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const {user} = useSelector((state: AuthState) => state.auth);
   const {pagePadding} = useSelector((state: LayoutState) => state.layout);
   
   const [currentUploadTask, setCurrentUploadTask] = useState<UploadTask | null>(null);
   const [image, setImage] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
+
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [backendError, setBackendError] = useState<null | string>(null);
 
+  const [editMode, setEditMode] = useState(false);
+  const [editedBlogId, setEditedBlogId] = useState<string | null>(null);
+  const [updatedCategories, setUpdatedCategories] = useState<string[]>([]);
+
   const methods = useForm<BlogFormFields>({mode: "onSubmit"});
+
+  const {values, loadingValues} = useBlogDefaultValues({blogId: editedBlogId});
+
+
+  /*---------------------------------------------------------*/
+  // Parsear los query params y extraer el editBlog si lo hay
+  /*---------------------------------------------------------*/
+  useEffect(() => {
+    const blogId = searchParams.get("editBlog");
+
+    if(blogId) {
+      setEditMode(true);
+      setEditedBlogId(blogId);
+    };
+
+    if(values) {
+      methods.reset({...values});
+      setUpdatedCategories(values.categories);
+    };
+  }, [searchParams, values]);
 
 
   /*--------------------------------------------*/
@@ -64,6 +92,32 @@ const CreateBlog = () => {
       currentUploadTask.cancel();
       setLoading(false);
       setUploadProgress(null);
+    }
+  };
+
+
+  // Actualizar el documento del blog en la DB
+  // si está en modo edición y redirigir.
+  const onEditHandler = async (values: BlogFormFields) => {
+    setLoading(true);
+
+    try {
+      const docRef = doc(blogsCollection, editedBlogId!);
+      await setDoc(docRef, {...values}, {merge: true});
+
+      dispatch(setOpen({open: true, message: "Blog edited sucessfully"}));
+
+      navigate(`/blog/${editedBlogId}`, {replace: true});
+      
+    } catch (error: any) {
+      const err = error as FirestoreError;
+      const msg = generateFirestoreErrorMsg(err.code);
+
+      setBackendError(msg);
+      window.scrollTo({top: 0, behavior: "smooth"});
+
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -203,7 +257,7 @@ const CreateBlog = () => {
       paddingBottom={pagePadding.bottom}
     >
       <Typography variant="h3" marginBottom="1.5rem">
-        Create Blog
+        {editMode ? "Edit" : "Create"} Blog
       </Typography>
 
       {backendError &&
@@ -219,16 +273,24 @@ const CreateBlog = () => {
       <FormProvider {...methods}>
         <form
           className="create-blog__form"
-          onSubmit={methods.handleSubmit(onSubmitHandler)}
+          onSubmit={methods.handleSubmit(editMode ? onEditHandler : onSubmitHandler)}
         >
           <BlogTitleField disabled={loading} />
-          <CategorySelector disabled={loading} />
-          <DescriptionField disabled={loading} />
-          <FileInput
-            imagePreview={filePreview}
-            setImage={setImage}
+          <CategorySelector
+            updatedCategories={updatedCategories}
+            editMode={editMode}
             disabled={loading}
           />
+          <DescriptionField disabled={loading} />
+
+          {/* No mostrar el input de imagen si está en modo edición */}
+          {!editMode &&
+            <FileInput
+              imagePreview={filePreview}
+              setImage={setImage}
+              disabled={loading}
+            />
+          }
 
           <Divider style={{width: "100%"}} />
 
@@ -240,10 +302,10 @@ const CreateBlog = () => {
               variant="outlined"
               type="submit"
               endIcon={<AiOutlinePlus />}
-              disabled={loading}
+              disabled={loading || loadingValues}
             >
-              {!loading && !uploadProgress && "Create blog"}
-              {loading && uploadProgress! < 100 && "Uploading blog..."}
+              {!loading && !uploadProgress && (editMode ? "Save changes" : "Create blog")}
+              {loading && uploadProgress! < 100 && (editMode ? "Updating..." : "Uploading blog...")}
               {loading && uploadProgress === 100 && "Finishing..."}
             </Button>
             <Button
