@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef, MutableRefObject} from "react";
 import {NavLink, useNavigate} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
-import {AppBar, Toolbar, Button, Box} from "@mui/material";
+import {AppBar, Toolbar, Button, Box, Avatar} from "@mui/material";
 import VerificationWarning from "./VerificationWarning";
 import Spinner from "../Spinner";
 import useResizeObserver from "../../hooks/useResizeObserver";
@@ -138,7 +138,12 @@ const NavBar = () => {
                     className={isActive ? "navbar__item__btn navbar__item__btn--active" : "navbar__item__btn"}
                     disableRipple
                   >
-                    {user?.displayName}
+                    <Avatar
+                      className="navbar__item__btn__avatar"
+                      src={user!.photoURL || ""}
+                      alt={user!.displayName}
+                    />
+                    {user!.displayName.split(" ")[0]}
                   </Button>
                 )
               }}

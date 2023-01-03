@@ -26,6 +26,10 @@
 }
 
 .navbar__item__btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
   text-transform: capitalize;
   color: var(--text-color);
   background-color: transparent;
@@ -35,4 +39,9 @@
 .navbar__item__btn:hover,
 .navbar__item__btn--active {
   background-color: rgba(0,0,0,0.15);
+}
+
+.navbar__item__btn__avatar {
+  width: 35px;
+  height: 35px;
 }
