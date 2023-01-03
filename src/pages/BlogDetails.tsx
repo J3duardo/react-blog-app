@@ -20,6 +20,7 @@ const BlogDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [showImageModalBtn, setShowImageModalBtn] = useState(false);
   const [openImageModal, setOpenImageModal] = useState(false);
 
   // Cargar la data del blog
@@ -86,16 +87,19 @@ const BlogDetails = () => {
           <img
             src={blogDetails!.imageUrl}
             alt={blogDetails!.title}
+            onLoad={() => setShowImageModalBtn(true)}
           />
-          <Tooltip title="Open image">
-            <IconButton
-              className="blog-detail__img__btn"
-              size="small"
-              onClick={() => setOpenImageModal(true)}
-            >
-              <AiOutlineCamera className="blog-detail__img__btn__icon" />
-            </IconButton>
-          </Tooltip>
+          {showImageModalBtn &&
+            <Tooltip title="Open image">
+              <IconButton
+                className="blog-detail__img__btn"
+                size="small"
+                onClick={() => setOpenImageModal(true)}
+              >
+                <AiOutlineCamera className="blog-detail__img__btn__icon" />
+              </IconButton>
+            </Tooltip>
+          }
           <Box className="blog-detail__img__overlay" />
         </Box>
       </Box>
