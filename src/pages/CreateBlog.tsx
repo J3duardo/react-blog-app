@@ -110,9 +110,6 @@ const CreateBlog = () => {
     // Generar el thumbnail de la imagen (versión de 600x600 px de la imagen principal)
     const thumbnail = await imageResizer(image!);
 
-    // Subir el thumbnail al bucket
-    const thumbnailUpload = await uploadBytes(previewImageStorageRef, thumbnail);
-
     // Crear el task de upload de la imagen principal
     const uploadTask = uploadBytesResumable(mainImageStorageRef, image!);
 
@@ -144,6 +141,9 @@ const CreateBlog = () => {
       },
       async () => {
         try {
+          // Subir el thumbnail al bucket
+          const thumbnailUpload = await uploadBytes(previewImageStorageRef, thumbnail);
+
           // Obtener la url de la imagen al terminar la subida.
           const url = await getDownloadURL(uploadTask.snapshot.ref);
 
