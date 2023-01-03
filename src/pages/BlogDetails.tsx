@@ -5,14 +5,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { doc, getDoc } from "firebase/firestore";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { AiOutlineCamera } from "react-icons/ai";
-import { AuthState, LayoutState } from "../redux/store";
-import { Blog } from "../components/HomePage/BlogSection";
-import { auth, blogsCollection } from "../firebase";
+import NotFound from "./NotFound";
 import ImageModal from "../components/ImageModal";
+import ConfirmModal from "../components/ConfirmModal";
 import BlogMetadata from "../components/BlogMetadata";
 import Spinner from "../components/Spinner";
+import { Blog } from "../components/HomePage/BlogSection";
 import { deleteBlog, DeleteBlogConfig } from "../utils/blogCrudHandlers";
-import ConfirmModal from "../components/ConfirmModal";
+import { AuthState, LayoutState } from "../redux/store";
+import { auth, blogsCollection } from "../firebase";
 import "../styles/blogDetailsPage.css";
 
 const BlogDetails = () => {
@@ -65,6 +66,7 @@ const BlogDetails = () => {
     navigate("/", {replace: true});
   };
 
+  // Mostrar spinner mientras carga la data del blog
   if (!blogDetails && loading) {
     return (
       <Spinner
@@ -76,8 +78,9 @@ const BlogDetails = () => {
     )
   };
 
-  if(!blogDetails && !loading) {
-    return null
+  // Mostrar página not found si el blog no existe
+  if(!loading && !blogDetails?.title) {
+    return <NotFound />
   };
 
   return (
