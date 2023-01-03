@@ -1,20 +1,26 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Box, Divider, IconButton, Tooltip, Typography } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
+import { Box, Button, Divider, IconButton, Tooltip, Typography } from "@mui/material";
+import { useSelector, useDispatch } from "react-redux";
 import { doc, getDoc } from "firebase/firestore";
+import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { AiOutlineCamera } from "react-icons/ai";
-import { LayoutState } from "../redux/store";
+import { AuthState, LayoutState } from "../redux/store";
 import { Blog } from "../components/HomePage/BlogSection";
-import { blogsCollection } from "../firebase";
+import { auth, blogsCollection } from "../firebase";
+import ImageModal from "../components/ImageModal";
 import BlogMetadata from "../components/BlogMetadata";
 import Spinner from "../components/Spinner";
+import { deleteBlog, DeleteBlogConfig } from "../utils/blogCrudHandlers";
+import ConfirmModal from "../components/ConfirmModal";
 import "../styles/blogDetailsPage.css";
-import ImageModal from "../components/ImageModal";
 
 const BlogDetails = () => {
   const {blogId} = useParams();
+  const navigate = useNavigate();
   const {navbarHeight} = useSelector((state: LayoutState) => state.layout);
+  const {isAuth} = useSelector((state: AuthState) => state.auth);
+  const dispatch = useDispatch();
 
   const [blogDetails, setBlogDetails] = useState<Blog | null>(null);
   const [loading, setLoading] = useState(true);
@@ -22,6 +28,9 @@ const BlogDetails = () => {
 
   const [showImageModalBtn, setShowImageModalBtn] = useState(false);
   const [openImageModal, setOpenImageModal] = useState(false);
+
+  const [deleting, setDeleting] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   // Cargar la data del blog
   useEffect(() => {
@@ -32,8 +41,9 @@ const BlogDetails = () => {
 
     getDoc(blogRef)
     .then((doc) => {
+      const docId = doc.id;
       const blogData = doc.data() as Blog;
-      setBlogDetails(blogData);
+      setBlogDetails({...blogData, id: docId});
     })
     .catch((err: any) => {
       console.log(err.message)
@@ -42,6 +52,18 @@ const BlogDetails = () => {
       setLoading(false)
     });
   }, [blogId]);
+
+  // Funcionalidad para eliminar el blog
+  const deleteBlogHandler = async () => {
+    const config: DeleteBlogConfig = {
+      blogData: blogDetails!,
+      dispatch
+    };
+
+    setDeleting(true);
+    await deleteBlog(config);
+    navigate("/", {replace: true});
+  };
 
   if (!blogDetails && loading) {
     return (
@@ -64,12 +86,24 @@ const BlogDetails = () => {
       className="blog-detail"
       component="section"
     >
+      {/* Modal para confirmar la eliminación del blog */}
+      <ConfirmModal
+        title="Delete this blog?"
+        content="This action cannot be undone."
+        loading={deleting}
+        open={openDeleteModal}
+        setOpen={setOpenDeleteModal}
+        confirmAction={deleteBlogHandler}
+      />
+
+      {/* Modal para mostrar la imagen del blog */}
       <ImageModal
         image={blogDetails!.imageUrl}
         open={openImageModal}
         setOpen={setOpenImageModal}
       />
 
+      {/* Imagen del blog */}
       <Box
         className="blog-detail__img-wrapper inner-wrapper-xl"
         style={{
@@ -104,12 +138,47 @@ const BlogDetails = () => {
         </Box>
       </Box>
 
+      {/* Contenido y metadata del blog */}
       <Box className="blog-detail__content inner-wrapper--sm">
-        <BlogMetadata
-          name={blogDetails!.author.displayName}
-          avatar={blogDetails!.author.photoURL}
-          date={blogDetails!.createdAt}
-        />
+        <Box
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}
+        >
+          <BlogMetadata
+            name={blogDetails!.author.displayName}
+            avatar={blogDetails!.author.photoURL}
+            date={blogDetails!.createdAt}
+          />
+
+          {/* Botones de edición y eliminación del blog */}
+          {isAuth && (auth.currentUser?.uid === blogDetails?.author.uid) &&
+            <Box className="blog-detail__author-actions">
+              <Button
+                variant="text"
+                size="small"
+                startIcon={<AiOutlineEdit />}
+                onClick={() => navigate(`/blog/create?editBlog=${blogDetails?.id}`)}
+              >
+                Edit
+              </Button>
+
+              <Divider orientation="vertical" flexItem />
+
+              <Button
+                variant="text"
+                size="small"
+                color="error"
+                startIcon={<AiOutlineDelete />}
+                onClick={() => setOpenDeleteModal(true)}
+              >
+                Delete
+              </Button>
+            </Box>
+          }
+        </Box>
 
         <Divider style={{margin: "var(--spacing) 0"}} />
 

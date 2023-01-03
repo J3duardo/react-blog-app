@@ -59,6 +59,16 @@
   z-index: 1;
 }
 
+.blog-detail__author-actions {
+  display: flex;
+  align-items: stretch;
+  gap: 5px;
+}
+
+.blog-detail__author-actions button {
+  text-transform: capitalize;
+}
+
 .blog-detail__title {
   margin-bottom: var(--spacing);
 }
