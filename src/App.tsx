@@ -19,6 +19,7 @@ const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    // Listener de los cambios de autenticación
     auth.onAuthStateChanged((user) => {
       if (user) {
         const userData: UserData = {
@@ -36,7 +37,32 @@ const App = () => {
         dispatch(setLoading(false));
       }
     });
+
+    // Listener de los eventos de localStorage
+    // para actualizar la data del usuario cuando ésta
+    // cambie en otra ventana del navegador.
+    window.addEventListener("storage", async (e: StorageEvent) => {
+      const key = e.key;
+      const newValue = e.newValue;
+
+      // Si el evento actualizó la data del current user
+      // reautenticar al usuario actualizar el state global.
+      if(key === "currentUser" && newValue) {
+        //! No funciona, no actualiza la data en la caché de firebase
+        let currentUser = auth.currentUser;
+        await currentUser!.reload();
+
+        dispatch(setCurrentUser(JSON.parse(newValue)));
+      };
+
+      // Si el evento eliminó la data del current user
+      // cerrar la sesión del usuario.
+      if(key === "currentUser" && !newValue) {
+        dispatch(logoutUser())
+      };
+    });
   }, []);
+
 
   return (
     <BrowserRouter>
