@@ -2,31 +2,35 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Box, Button, Divider, IconButton, Tooltip, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, DocumentData, DocumentReference} from "firebase/firestore";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { AiOutlineCamera } from "react-icons/ai";
 import NotFound from "./NotFound";
 import ImageModal from "../components/ImageModal";
 import ConfirmModal from "../components/ConfirmModal";
 import BlogMetadata from "../components/BlogMetadata";
+import CategoryChip from "../components/BlogCard/CategoryChip";
 import Spinner from "../components/Spinner";
 import { Blog } from "../components/HomePage/BlogSection";
-import { deleteBlog, DeleteBlogConfig } from "../utils/blogCrudHandlers";
+import { deleteBlog, DeleteBlogConfig, getBlogData } from "../utils/blogCrudHandlers";
 import { AuthState, LayoutState } from "../redux/store";
-import { auth, blogsCollection } from "../firebase";
+import { auth, blogsCollection, db } from "../firebase";
+import { generateFirestoreErrorMsg } from "../utils/firebaseErrorMessages";
+import { setOpen } from "../redux/features/snackbarSlice";
 import "../styles/blogDetailsPage.css";
-import CategoryChip from "../components/BlogCard/CategoryChip";
 
 const BlogDetails = () => {
   const {blogId} = useParams();
   const navigate = useNavigate();
   const {navbarHeight} = useSelector((state: LayoutState) => state.layout);
-  const {isAuth} = useSelector((state: AuthState) => state.auth);
+  const {isAuth, user} = useSelector((state: AuthState) => state.auth);
   const dispatch = useDispatch();
 
   const [blogDetails, setBlogDetails] = useState<Blog | null>(null);
+  const [blogViews, setBlogViews] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [blogNotFound, setBlogNotFoud] = useState(false);
+  const [_error, setError] = useState<string | null>(null);
 
   const [showImageModalBtn, setShowImageModalBtn] = useState(false);
   const [openImageModal, setOpenImageModal] = useState(false);
@@ -34,26 +38,52 @@ const BlogDetails = () => {
   const [deleting, setDeleting] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
+  // Funcionalidad para consultar la data del blog
+  // y actualizar el número de views.
+  const fetchBlogData = async (
+    blogRef: DocumentReference<DocumentData>,
+    viewsRef: DocumentReference<DocumentData>
+  ) => {
+    try {
+      setLoading(true);
+      setBlogNotFoud(false);
+
+      const {blogData, currentViewsCount} = await getBlogData(blogRef, viewsRef);
+
+      if (!blogData) {
+        setBlogNotFoud(true);
+        return setLoading(false)
+      };
+
+      setBlogDetails(blogData);
+      setBlogViews(currentViewsCount);
+      
+    } catch (error: any) {
+      let message = error.message;
+    
+      if("code" in error) {
+        message = generateFirestoreErrorMsg(error.code);
+      };
+
+      dispatch(setOpen({open: true, message}));
+
+    } finally {
+      setLoading(false)
+    };
+  };
+
   // Cargar la data del blog
   useEffect(() => {
     setLoading(true);
     setError(null);
+    setBlogNotFoud(false);
 
     const blogRef = doc(blogsCollection, blogId);
+    const viewsRef = doc(collection(db, "blogViews"), blogId);
 
-    getDoc(blogRef)
-    .then((doc) => {
-      const docId = doc.id;
-      const blogData = doc.data() as Blog;
-      setBlogDetails({...blogData, id: docId});
-    })
-    .catch((err: any) => {
-      console.log(err.message)
-    })
-    .finally(() => {
-      setLoading(false)
-    });
-  }, [blogId]);
+    fetchBlogData(blogRef, viewsRef);
+
+  }, [blogId, user]);
 
   // Funcionalidad para eliminar el blog
   const deleteBlogHandler = async () => {
@@ -80,7 +110,7 @@ const BlogDetails = () => {
   };
 
   // Mostrar página not found si el blog no existe
-  if(!loading && !blogDetails?.title) {
+  if(!loading && (blogNotFound || !blogDetails)) {
     return <NotFound />
   };
 
