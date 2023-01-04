@@ -111,7 +111,6 @@ const BlogDetails = () => {
       <Box
         className="blog-detail__img-wrapper inner-wrapper-xl"
         style={{
-          padding: 0,
           backgroundImage: `
             linear-gradient(to bottom, rgba(0,0,0,0.15) 35%, rgba(0,0,0,0.75) 100%),
             url(${blogDetails!.imageUrl})
@@ -121,14 +120,14 @@ const BlogDetails = () => {
         {/* Efecto blur de la imagen de fondo del banner */}
         <Box className="blog-detail__backdrop-blur"/>
 
-        <Box className="blog-detail__img">
+        <Box className="blog-detail__img inner-wrapper--sm">
           <img
             src={blogDetails!.imageUrl}
             alt={blogDetails!.title}
             onLoad={() => setShowImageModalBtn(true)}
           />
           {showImageModalBtn &&
-            <Tooltip title="Open image">
+            <Tooltip title="View image">
               <IconButton
                 className="blog-detail__img__btn"
                 size="small"

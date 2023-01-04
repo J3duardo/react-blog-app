@@ -9,7 +9,7 @@
   --text-small: 0.75rem;
 
   /* Variables de espaciado */
-  --line-height: 1.5;
+  --line-height: 1.8;
   --line-height-titles: 1.2;
   --baseline: calc(var(--paragraph) * var(--line-height));
   --spacing: calc(var(--baseline) * 0.5);
@@ -28,7 +28,7 @@
   --text-color: var(--text-color-light);
   --bg-color: var(--bg-light);
   --bg-card-color: var(--bg-card-light);
-  --shadow-y: 0px 6px 10px 0px rgb(0,0,0,0.6);
+  --shadow-y: 0px 6px 10px -3px rgb(0,0,0,0.8);
 
   --mui-error: #d32f2f;
   --mui-primary: #1976D2;
