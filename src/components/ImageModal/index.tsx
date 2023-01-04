@@ -20,9 +20,13 @@ const ImageModal = ({image, open, setOpen}: Props) => {
       maxWidth="md"
       className="image-dialog"
       open={open}
+      slotProps={{
+        backdrop: {style: {backgroundColor: "rgba(0,0,0,0.9)"}}
+      }}
       PaperProps={{
         style: {
-          marginTop: `calc(${navbarHeight}px + var(--spacing-xl))`
+          marginTop: `calc(${navbarHeight}px + var(--spacing-xl))`,
+          backgroundColor: "transparent"
         }
       }}
       onClose={() => setOpen(false)}

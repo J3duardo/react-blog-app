@@ -1,6 +1,8 @@
 .image-dialog__content {
   position: relative;
-  max-height: 90vh;
+  height: 90vh;
+  overflow-y: hidden;
+  background-color: transparent;
 }
 
 .image-dialog__img-wrapper {
@@ -14,6 +16,7 @@
   position: absolute;
   top: 5px;
   right: 5px;
+  color: white;
 }
 
 .image-dialog__img {
