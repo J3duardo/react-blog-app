@@ -76,7 +76,7 @@ export const FileInput = ({imagePreview, setImage, disabled}: Props) => {
         type="file"
         id="image"
         disabled={disabled}
-        accept="image/jpeg, image/jpg, image/png"
+        accept="image/jpeg, image/jpg, image/png, image/webp"
         {...rest}
       />
       <FormHelperText>
