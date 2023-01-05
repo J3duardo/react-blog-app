@@ -10,7 +10,7 @@ const Home = () => {
   const {user} = useSelector((state: AuthState) => state.auth);
   const {pagePadding: {top, bottom}} = useSelector((state: LayoutState) => state.layout);
 
-  const {loading, blogs} = useFetchBlogs();
+  const {blogs, trendingCategories, loading} = useFetchBlogs();
 
   return (
     <Box
@@ -19,8 +19,16 @@ const Home = () => {
       component="main"
     >
       <Box className="home-page__main-section" component="section">
-        <BlogSection currentUser={user} blogs={blogs} loading={loading} />
-        <MostPopular />
+        <BlogSection
+          currentUser={user}
+          blogs={blogs}
+          loading={loading}
+        />
+        <MostPopular 
+          loading={loading}
+          testBlogs={blogs.slice(0,3)}
+          trendingCategories={trendingCategories}
+        />
       </Box>
     </Box>
   )
