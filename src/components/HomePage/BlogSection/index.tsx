@@ -27,7 +27,7 @@ interface Props {
 const BlogSection = ({currentUser, blogs, loading}: Props) => {
   return (
     <Box className="home-page__blog-section" component="article">
-      <Typography className="home-page__blogs-title" variant="h4">
+      <Typography className="home-page__main-title" variant="h4">
         Recent Blogs
       </Typography>
 

@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef, MutableRefObject} from "react";
 import {NavLink, useNavigate} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
-import {AppBar, Toolbar, Button, Box, Avatar} from "@mui/material";
+import {AppBar, Toolbar, Button, Box, Avatar, Divider} from "@mui/material";
 import VerificationWarning from "./VerificationWarning";
 import Spinner from "../Spinner";
 import useResizeObserver from "../../hooks/useResizeObserver";
@@ -148,6 +148,13 @@ const NavBar = () => {
                 )
               }}
             </NavLink>
+
+            <Divider
+              style={{borderColor: "#ccc"}}
+              orientation="vertical"
+              flexItem
+            />
+
             <Button
               className="navbar__item__btn"
               disabled={loggingOut}

@@ -33,6 +33,7 @@
   --mui-error: #d32f2f;
   --mui-primary: #1976D2;
   --mui-border: 1px solid rgba(0, 0, 0, 0.12);
+  --mui-border-wide: 2px solid rgba(0, 0, 0, 0.12);
 }
 
 body {
@@ -102,5 +103,5 @@ body {
 }
 
 .card-shadow {
-  box-shadow: 0 0 10px 3px #ccc;
+  box-shadow: 0 0 5px 2px #ccc;
 }
