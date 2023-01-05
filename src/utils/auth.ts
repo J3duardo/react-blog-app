@@ -91,6 +91,22 @@ export const authHandler = async (config: AuthConfig) => {
 
 
 /**
+ * Obtener la dirección IP del usuario
+ */
+export const getUserIp = async () => {
+  try {
+    const res = await fetch("https://api.ipify.org/?format=json");
+    const ipData = await res.json() as {ip: string};
+
+    return ipData.ip;
+    
+  } catch (error: any) {
+    console.log(error.message)
+  }
+}
+
+
+/**
  * Manejo de errores de inicio de sesión.
  */
 function loginErrorHandler(
