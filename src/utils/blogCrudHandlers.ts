@@ -35,7 +35,7 @@ export const getBlogData = async (
   };
 
   // Extraer la data del blog
-  const blogData = blogSnapshot.data() as Blog;
+  const blogData = {id: blogSnapshot.id, ...blogSnapshot.data()} as Blog;
 
   // Consultar la IP del usuario
   const ip = await getUserIp();
