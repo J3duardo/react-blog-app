@@ -26,7 +26,6 @@ const Home = () => {
         />
         <MostPopular 
           loading={loading}
-          testBlogs={blogs.slice(0,3)}
           trendingCategories={trendingCategories}
         />
       </Box>

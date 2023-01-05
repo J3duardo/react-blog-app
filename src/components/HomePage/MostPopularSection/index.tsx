@@ -1,19 +1,21 @@
 import { Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import PopularCategories from "./PopularCategories";
+import PopularBlog from "./PopularBlog";
 import CategorySkeleton from "../CategorySkeleton";
 import PopularBlogSkeleton from "./PopularBlogSkeleton";
-import { Blog } from "../BlogSection";
+import useFetchPopularBlogs from "../../../hooks/useFetchPopularBlogs";
 import { CategoryObj } from "../../../utils/arrayOccurrencesCounter";
-import PopularBlog from "./PopularBlog";
 
 interface Props {
   trendingCategories: CategoryObj[];
-  testBlogs: Blog[];
   loading: boolean;
 };
 
-const MostPopular = ({trendingCategories, testBlogs, loading}: Props) => {
+const MostPopular = ({trendingCategories, loading}: Props) => {
+  // Consultar los blogs más populares
+  const {loadingPopularBlogs, popularBlogs} = useFetchPopularBlogs();
+
   return (
     <Box className="home-page__most-popular-section" component="aside">
       <Typography className="home-page__main-title" variant="h4">
@@ -27,7 +29,7 @@ const MostPopular = ({trendingCategories, testBlogs, loading}: Props) => {
         Popular blogs
       </Typography>
 
-      {loading &&
+      {loadingPopularBlogs &&
         <Box className="home-page__popular-blogs">
           <PopularBlogSkeleton />
           <PopularBlogSkeleton />
@@ -35,9 +37,9 @@ const MostPopular = ({trendingCategories, testBlogs, loading}: Props) => {
         </Box>
       }
 
-      {!loading &&
+      {!loadingPopularBlogs &&
         <Box className="home-page__popular-blogs">
-          {testBlogs.map(blog => {
+          {popularBlogs.map(blog => {
             return (
               <Link
                 key={blog.id}
