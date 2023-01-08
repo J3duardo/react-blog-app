@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction } from "react";
-import { NavigateFunction } from "react-router-dom";
 import { UseFormReturn } from "react-hook-form";
 import { Dispatch as ReduxDispatch } from "@reduxjs/toolkit";
 import { AuthError, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
@@ -14,7 +13,6 @@ export interface AuthConfig {
   values: LoginFormFields | SignupFormFields,
   setLoading: Dispatch<SetStateAction<boolean>>,
   setBackendError: Dispatch<SetStateAction<string | null>>,
-  navigate: NavigateFunction,
   methods: UseFormReturn<any>,
   dispatch: ReduxDispatch
 };
@@ -31,7 +29,7 @@ enum FormFields {
  * o para iniciar sesión de usuario.
  */
 export const authHandler = async (config: AuthConfig) => {
-  const {authMode, values, setLoading, setBackendError, methods, navigate, dispatch} = config;
+  const {authMode, values, setLoading, setBackendError, methods, dispatch} = config;
 
   // Type guard para verificar si la operación es se login
   const isLoginMode = (values: LoginFormFields | SignupFormFields): values is LoginFormFields => {
@@ -51,7 +49,6 @@ export const authHandler = async (config: AuthConfig) => {
     try {
       const {email, password} = values;
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/", {replace: true});
       
     } catch (error: unknown) {
       loginErrorHandler(error, methods, setBackendError);
@@ -77,8 +74,6 @@ export const authHandler = async (config: AuthConfig) => {
       // Actualizar los nuevos datos del perfil del usuario en el state global
       const currentUser = JSON.parse(localStorage.getItem("currentUser")!);
       dispatch(setCurrentUser({...currentUser, displayName: name + " " + lastname}));
-
-      navigate("/", {replace: true});
 
     } catch (error: unknown) {
       signupErrorHandler(error, methods, setBackendError);

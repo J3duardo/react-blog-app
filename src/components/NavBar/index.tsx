@@ -1,5 +1,5 @@
 import {useState, useEffect, useRef, MutableRefObject} from "react";
-import {NavLink, useNavigate} from "react-router-dom";
+import {NavLink, useNavigate, useLocation} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
 import {AppBar, Toolbar, Button, Box, Avatar, Divider} from "@mui/material";
 import VerificationWarning from "./VerificationWarning";
@@ -27,6 +27,7 @@ const NavBar = () => {
   const {isAuth, user, loading} = useSelector((state: AuthState) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const {pathname} = useLocation();
 
   const [loggingOut, setLoggingOut] = useState(false);
   const [showVerificationWarning, setShowVerificationWarning] = useState(true);
@@ -108,6 +109,7 @@ const NavBar = () => {
                   key={el.id}
                   to={el.to}
                   className="navbar__item"
+                  state={{from: pathname}}
                 >
                   {({isActive}) => {
                     return (

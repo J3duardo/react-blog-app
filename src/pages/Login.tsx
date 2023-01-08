@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {Box, Button, Typography, Alert} from "@mui/material";
 import {useForm, FormProvider} from "react-hook-form";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
 import {AiOutlineLogin} from "react-icons/ai";
 import {EmailField, PasswordField} from "../components/AuthFormsElements";
@@ -16,6 +16,7 @@ export interface LoginFormFields {
 };
 
 const Login = () => {
+  const {state} = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {pagePadding} = useSelector((state: LayoutState) => state.layout);
@@ -31,13 +32,20 @@ const Login = () => {
       authMode: "login",
       values,
       methods,
-      navigate,
       setLoading,
       setBackendError,
       dispatch
     } satisfies AuthConfig;
 
     await authHandler(authConfig);
+
+    // Redirigir a la página anterior (si aplica)
+    // o al home, en su defecto.
+    if(state) {
+      navigate(state.from, {replace: true})
+    } else {
+      navigate("/", {replace: true})
+    };
   };
 
   return (

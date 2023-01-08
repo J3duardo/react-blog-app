@@ -2,7 +2,7 @@ import {useState} from "react";
 import {Box, Button, Typography, Alert} from "@mui/material";
 import {useSelector, useDispatch} from "react-redux";
 import {useForm, FormProvider} from "react-hook-form";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 import {AiOutlineLogin} from "react-icons/ai";
 import {GenericTextField, EmailField, PasswordField, PasswordConfirmField} from "../components/AuthFormsElements";
 import {LayoutState} from "../redux/store";
@@ -22,6 +22,7 @@ const Signup = () => {
   const {pagePadding} = useSelector((state: LayoutState) => state.layout);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const {state} = useLocation();
 
   const [loading, setLoading] = useState(false);
   const [backendError, setBackendError] = useState<null | string>(null);
@@ -46,13 +47,20 @@ const Signup = () => {
       authMode: "signup",
       values,
       methods,
-      navigate,
       setLoading,
       setBackendError,
       dispatch
     } satisfies AuthConfig;
 
     await authHandler(authConfig);
+
+    // Redirigir a la página anterior (si aplica)
+    // o al home, en su defecto.
+    if(state) {
+      navigate(state.from, {replace: true})
+    } else {
+      navigate("/", {replace: true})
+    };
   };
 
   return (
