@@ -1,6 +1,7 @@
+import { Dispatch as ReactDispatch, SetStateAction } from "react";
 import { AnyAction, Dispatch as ReduxDispatch } from "@reduxjs/toolkit";
 import { AuthError } from "firebase/auth";
-import { deleteDoc, doc, DocumentData, DocumentReference, FirestoreError, getDoc, setDoc } from "firebase/firestore";
+import { arrayUnion, deleteDoc, doc, DocumentData, DocumentReference, FirestoreError, getDoc, setDoc } from "firebase/firestore";
 import { deleteObject, ref, StorageError } from "firebase/storage";
 import { db, storage } from "../firebase";
 import { setOpen } from "../redux/features/snackbarSlice";
@@ -10,63 +11,60 @@ import { generateFirebaseAuthErrorMsg, generateFirebaseStorageErrorMsg, generate
 
 export interface DeleteBlogConfig {
   blogData: Blog;
-  dispatch: ReduxDispatch<AnyAction>;
+  dispatch: ReduxDispatch<AnyAction>
+};
+
+export interface BlogViews {
+  blogId: string;
+  views: string[];
 };
 
 /**
- * Consultar la data del blog y actualizar el contador de views.
+ * Actualizar el contador de views del blog especificado.
  * @param blogRef Referencia del documento de Firebase del blog a consultar.
  * @param viewsRef Referencia del documento de Firebase de los views del blog a consultar.
  * @returns Data del blog y número de views.
  */
-export const getBlogData = async (
+export const updateBlogViews = async (
   blogRef: DocumentReference<DocumentData>,
-  viewsRef: DocumentReference<DocumentData>
+  viewsRef: DocumentReference<DocumentData>,
+  setBlogViews: ReactDispatch<SetStateAction<number>>,
+  setError: ReactDispatch<SetStateAction<string | null>>
 ) => {
-  // Consultar la data del blog
-  const blogSnapshot = await getDoc(blogRef);
-
-  // Consultar los views del blog
-  const viewsSnapshot = await getDoc(viewsRef);
-
-  // Retornar con error si el blog no existe
-  if(!blogSnapshot.exists()) {
-    throw new Error("Blog not found or deleted")
-  };
-
-  // Extraer la data del blog
-  const blogData = {id: blogSnapshot.id, ...blogSnapshot.data()} as Blog;
-
-  // Consultar la IP del usuario
-  const ip = await getUserIp();
-  let currentViewsIps: string[] = [];
-  let currentViewsCount: number = 0;
-
-  // Verificar si ya existe la colección de views del blog
-  if(viewsSnapshot.exists()) {
-    currentViewsIps = viewsSnapshot.data().views as string[];
-    currentViewsCount = currentViewsIps.length;
-  };
-
-  // Si la IP actual no está en los views del blog, agregarla.
-  if(ip && !currentViewsIps.includes(ip)) {
-    currentViewsIps.push(ip);
-
-    await setDoc(
+  try {
+    // Consultar la IP del usuario
+    const ip = await getUserIp();
+  
+    // Retornar si hubo error al consultar la IP del usuario
+    if(!ip) {
+      throw new Error("Unknown error");
+    };
+  
+    // Agregar la ip al array de IPs del blogView si no está presente
+    await  setDoc(
       viewsRef,
       {
-        blogId: blogSnapshot.id,
-        views: currentViewsIps,
-        viewsCount: currentViewsIps.length
+        blogId: blogRef.id,
+        views: arrayUnion(ip),
+        // viewsCount: increment(1)
       },
       {merge: true}
     );
-  };
 
-  return {
-    blogData,
-    currentViewsCount
-  };
+    // Actualizar el contador del blogView con el length actualizado del array de IPs
+    const ref = doc(db, "blogViews", blogRef.id);
+    const viewsDoc = await getDoc(ref);
+    const currentViews = viewsDoc.get("views") as string[];
+
+    await setDoc(viewsRef, {viewsCount: currentViews.length}, {merge: true});
+    setBlogViews(currentViews.length);
+    
+  } catch (error: unknown) {
+    console.log("Error updating views counter", error);
+    const err = error as FirestoreError;
+    const msg = generateFirestoreErrorMsg(err.code);
+    setError(msg);
+  }
 };
 
 
