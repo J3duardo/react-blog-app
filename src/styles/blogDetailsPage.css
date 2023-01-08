@@ -65,10 +65,33 @@
   display: flex;
   align-items: stretch;
   gap: 5px;
+  margin-left: var(--spacing);
 }
 
 .blog-detail__author-actions button {
   text-transform: capitalize;
+}
+
+.blog-detail__views-counter {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+  font-size: 13px;
+}
+
+.blog-detail__views-counter__item {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  width: 25px;
+  height: 25px;
+  font-size: inherit;
+  font-weight: 700;
+  text-align: center;
+  background-color: black;
+  color: white;
 }
 
 .blog-detail__categories {

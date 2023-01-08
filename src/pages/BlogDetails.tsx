@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Box, Button, Divider, IconButton, Tooltip, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
-import { collection, doc, DocumentData, DocumentReference} from "firebase/firestore";
+import { collection, doc, onSnapshot} from "firebase/firestore";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { AiOutlineCamera } from "react-icons/ai";
 import NotFound from "./NotFound";
@@ -12,7 +12,7 @@ import BlogMetadata from "../components/BlogMetadata";
 import CategoryChip from "../components/BlogCard/CategoryChip";
 import Spinner from "../components/Spinner";
 import { Blog } from "../components/HomePage/BlogSection";
-import { deleteBlog, DeleteBlogConfig, getBlogData } from "../utils/blogCrudHandlers";
+import { deleteBlog, DeleteBlogConfig, updateBlogViews } from "../utils/blogCrudHandlers";
 import { AuthState, LayoutState } from "../redux/store";
 import { auth, blogsCollection, db } from "../firebase";
 import { generateFirestoreErrorMsg } from "../utils/firebaseErrorMessages";
@@ -27,10 +27,10 @@ const BlogDetails = () => {
   const dispatch = useDispatch();
 
   const [blogDetails, setBlogDetails] = useState<Blog | null>(null);
-  const [blogViews, setBlogViews] = useState<number | null>(null);
+  const [blogViews, setBlogViews] = useState<number>(0);
   const [loading, setLoading] = useState(true);
-  const [blogNotFound, setBlogNotFoud] = useState(false);
-  const [_error, setError] = useState<string | null>(null);
+  const [blogNotFound, setBlogNotFound] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [showImageModalBtn, setShowImageModalBtn] = useState(false);
   const [openImageModal, setOpenImageModal] = useState(false);
@@ -38,54 +38,56 @@ const BlogDetails = () => {
   const [deleting, setDeleting] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-  // Funcionalidad para consultar la data del blog
-  // y actualizar el número de views.
-  const fetchBlogData = async (
-    blogRef: DocumentReference<DocumentData>,
-    viewsRef: DocumentReference<DocumentData>
-  ) => {
-    try {
-      setLoading(true);
-      setBlogNotFoud(false);
 
-      const {blogData, currentViewsCount} = await getBlogData(blogRef, viewsRef);
-
-      if (!blogData) {
-        setBlogNotFoud(true);
-        return setLoading(false)
-      };
-
-      setBlogDetails(blogData);
-      setBlogViews(currentViewsCount);
-      
-    } catch (error: any) {
-      let message = error.message;
-    
-      if("code" in error) {
-        message = generateFirestoreErrorMsg(error.code);
-      };
-
-      dispatch(setOpen({open: true, message}));
-
-    } finally {
-      setLoading(false)
-    };
-  };
-
-  // Cargar la data del blog
+  /*--------------------------------------------------------------*/
+  // Consultar la data del blog y actualizar el contador de views
+  /*--------------------------------------------------------------*/
   useEffect(() => {
     setLoading(true);
     setError(null);
-    setBlogNotFoud(false);
+    setBlogNotFound(false);
 
     const blogRef = doc(blogsCollection, blogId);
     const viewsRef = doc(collection(db, "blogViews"), blogId);
 
-    fetchBlogData(blogRef, viewsRef);
+    setLoading(true);
+    setError(null);
+    setBlogNotFound(false);
+
+    // Actualizar el contador de views del blog
+    // y actualizar el state con el contador actualizado.
+    updateBlogViews(blogRef, viewsRef, setBlogViews, setError);
+
+    // Listener para consultar la data del blog en tiempo real
+    const blogUnsubscribe = onSnapshot(blogRef,
+      (blogSnapshot) => {
+        if(!blogSnapshot.exists()) {
+          setBlogNotFound(true);
+          setLoading(false);
+        };
+
+        const blogData = blogSnapshot.data() as Blog;
+        setBlogDetails({...blogData, id: blogSnapshot.id});
+        setLoading(false);
+      },
+      (error) => {
+        const msg = generateFirestoreErrorMsg(error.code);
+        dispatch(setOpen({open: true, message: msg}));
+        setError(msg);
+        setLoading(false);
+      }
+    );
+
+    return () => {
+      blogUnsubscribe();
+    };
 
   }, [blogId, user]);
 
+
+  /*-------------------------------------*/
   // Funcionalidad para eliminar el blog
+  /*-------------------------------------*/
   const deleteBlogHandler = async () => {
     const config: DeleteBlogConfig = {
       blogData: blogDetails!,
@@ -97,8 +99,11 @@ const BlogDetails = () => {
     navigate("/", {replace: true});
   };
 
+
+  /*-------------------------------------------------*/
   // Mostrar spinner mientras carga la data del blog
-  if (!blogDetails && loading) {
+  /*-------------------------------------------------*/
+  if (loading && !blogDetails) {
     return (
       <Spinner
         containerHeight="100vh"
@@ -109,10 +114,14 @@ const BlogDetails = () => {
     )
   };
 
+
+  /*-----------------------------------------------*/
   // Mostrar página not found si el blog no existe
-  if(!loading && (blogNotFound || !blogDetails)) {
+  /*-----------------------------------------------*/
+  if(!loading && blogNotFound) {
     return <NotFound />
   };
+
 
   return (
     <Box
@@ -185,10 +194,32 @@ const BlogDetails = () => {
             avatar={blogDetails!.author.photoURL}
             date={blogDetails!.createdAt}
           />
+          
+          {blogViews > 0 &&
+            <Box className="blog-detail__views-counter">
+              {blogViews.toString().split("").map((char, i) => {
+                return (
+                  <Typography key={i} className="blog-detail__views-counter__item">
+                    {char}
+                  </Typography>
+                )
+              })}
+              <Typography
+                style={{
+                  marginLeft: "5px",
+                  fontSize: "inherit",
+                  fontWeight: 700
+                }}>
+                Views
+              </Typography>
+            </Box>
+          }
 
           {/* Botones de edición y eliminación del blog */}
           {isAuth && (auth.currentUser?.uid === blogDetails?.author.uid) &&
             <Box className="blog-detail__author-actions">
+              <Divider orientation="vertical" flexItem />
+
               <Button
                 variant="text"
                 size="small"
