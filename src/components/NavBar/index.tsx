@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef, MutableRefObject} from "react";
 import {NavLink, useNavigate, useLocation} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
-import {AppBar, Toolbar, Button, Box, Avatar, Divider} from "@mui/material";
+import {AppBar, Toolbar, Button, Box, Avatar} from "@mui/material";
 import VerificationWarning from "./VerificationWarning";
 import Spinner from "../Spinner";
 import useResizeObserver from "../../hooks/useResizeObserver";
@@ -10,12 +10,6 @@ import {logoutUser} from "../../redux/features/authSlice";
 import {setNavbarHeight, setPagePadding} from "../../redux/features/layoutSlice";
 import {auth} from "../../firebase";
 import "./navBar.css";
-
-const MENU_ITEMS__LEFT = [
-  {id: 1, title: "Home", to: "/"},
-  {id: 2, title: "Create", to: "/blog/create"},
-  {id: 3, title: "About", to: "/about"},
-];
 
 const MENU_ITEMS_NOAUTH = [
   {id: 4, title: "Login", to: "/login"},
@@ -68,26 +62,18 @@ const NavBar = () => {
     >
       <Toolbar className="navbar__toolbar inner-wrapper">
         <Box className="navbar__items">
-          {MENU_ITEMS__LEFT.map((el) => {
-            return (
-              <NavLink
-                key={el.id}
-                to={el.to}
-                className="navbar__item"
-              >
-                {({isActive}) => {
-                  return (
-                    <Button
-                      className={isActive ? "navbar__item__btn navbar__item__btn--active" : "navbar__item__btn"}
-                      disableRipple
-                    >
-                      {el.title}
-                    </Button>
-                  )
-                }}
-              </NavLink>
-            )
-          })}
+          <NavLink to="/" className="navbar__item">
+            {({isActive}) => {
+              return (
+                <Button
+                  className={isActive ? "navbar__item__btn navbar__item__btn--active" : "navbar__item__btn"}
+                  disableRipple
+                >
+                  Blog
+                </Button>
+              )
+            }}
+          </NavLink>
         </Box>
 
         {loading &&
@@ -101,6 +87,7 @@ const NavBar = () => {
           </Box>
         }
 
+        {/* Items para usuarios no autenticados */}
         {!isAuth && !loading &&
           <Box className="navbar__items">
             {MENU_ITEMS_NOAUTH.map((el) => {
@@ -128,6 +115,7 @@ const NavBar = () => {
           </Box>
         }
 
+        {/* Items para usuarios autenticados */}
         {isAuth && !loading &&
           <Box className="navbar__items">
             <NavLink
@@ -151,30 +139,43 @@ const NavBar = () => {
               }}
             </NavLink>
 
-            <Divider
-              style={{borderColor: "#ccc"}}
-              orientation="vertical"
-              flexItem
-            />
-
-            <Button
-              className="navbar__item__btn"
-              disabled={loggingOut}
-              onClick={logoutHandler}
-              disableRipple
+            <NavLink
+              to="/blog/create"
+              className="navbar__item"
             >
-              Logout
-            </Button>
+              {({isActive}) => {
+                return (
+                  <Button
+                    className={isActive ? "navbar__item__btn navbar__item__btn--active" : "navbar__item__btn"}
+                    disableRipple
+                  >
+                    Create
+                  </Button>
+                )
+              }}
+            </NavLink>
+
+            <NavLink to="#" className="navbar__item">
+              <Button
+                className="navbar__item__btn"
+                disabled={loggingOut}
+                onClick={logoutHandler}
+                disableRipple
+              >
+                Logout
+              </Button>
+            </NavLink>
           </Box>
         }
       </Toolbar>
 
+      {/* Barra del mensaje de email no verificado */}
       {isAuth && !user?.emailVerified && showVerificationWarning &&
         <VerificationWarning setShowWarning={setShowVerificationWarning} />
       }
 
     </AppBar>
   )
-}
+};
 
 export default NavBar;
