@@ -4,6 +4,7 @@ import {BrowserRouter, Routes, Route} from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Spinner from "./components/Spinner";
 import GenericSnackbar from "./components/GenericSnackbar";
+import ErrorBoundaries from "./components/ErrorBoundaries";
 import {UserData, setCurrentUser, logoutUser, setLoading} from "./redux/features/authSlice";
 import {auth} from "./firebase";
 
@@ -65,25 +66,27 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <NavBar />
-      <Suspense fallback={
-        <Spinner 
-          containerHeight="100vh"
-          spinnerWidth="50px"
-          spinnerHeight="50px"
-          spinnerColor="black"
-        />}
-      >
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/blog/:blogId" element={<BlogDetails />} />
-          <Route path="/blog/create" element={<CreateBlogPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </Suspense>
-      <GenericSnackbar />
+      <ErrorBoundaries>
+        <NavBar />
+        <Suspense fallback={
+          <Spinner
+            containerHeight="100vh"
+            spinnerWidth="50px"
+            spinnerHeight="50px"
+            spinnerColor="black"
+          />}
+        >
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/blog/:blogId" element={<BlogDetails />} />
+            <Route path="/blog/create" element={<CreateBlogPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Suspense>
+        <GenericSnackbar />
+      </ErrorBoundaries>
     </BrowserRouter>
   );
 };
