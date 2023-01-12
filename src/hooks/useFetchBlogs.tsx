@@ -15,6 +15,8 @@ const useFetchBlogs = (sortBy: SortBy) => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
 
   useEffect(() => {
+    setLoading(true);
+
     const blogsQuery = query(blogsCollection, orderBy("createdAt", sortBy));
 
     const unsubscribe = onSnapshot(
