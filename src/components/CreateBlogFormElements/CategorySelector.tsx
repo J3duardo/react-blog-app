@@ -48,7 +48,7 @@ export const CategorySelector = ({disabled, updatedCategories, editMode}: Props)
       const collectionRef = collection(db, "categories");
 
       // Query para consultar todas las categorías
-      const q = query(collectionRef, orderBy("category", "desc"));
+      const q = query(collectionRef, orderBy("category", "asc"));
 
       // Ejecutar el query
       getDocs(q)

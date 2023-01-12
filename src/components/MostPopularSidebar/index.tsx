@@ -4,9 +4,7 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { BsFacebook, BsGithub } from "react-icons/bs";
 import { AiFillBehanceCircle } from "react-icons/ai";
-import PopularCategories from "./PopularCategories";
 import PopularBlog from "./PopularBlog";
-import CategorySkeleton from "./CategorySkeleton";
 import PopularBlogSkeleton from "./PopularBlogSkeleton";
 import useFetchPopularBlogs from "../../hooks/useFetchPopularBlogs";
 import { CategoryObj } from "../../utils/arrayOccurrencesCounter";
@@ -24,7 +22,7 @@ interface Props {
   loading: boolean;
 };
 
-const MostPopular = ({offset, trendingCategories, loading}: Props) => {
+const MostPopular = ({offset}: Props) => {
   const sidebarRef = useRef<HTMLElement | null>(null);
   const dispatch = useDispatch();
 
@@ -59,14 +57,7 @@ const MostPopular = ({offset, trendingCategories, loading}: Props) => {
     >
       <Box className="sidebar__content custom-scrollbar">
         <Typography className="sidebar__main-title" variant="h4">
-          Popular categories
-        </Typography>
-
-        {loading && <CategorySkeleton />}
-        {!loading && <PopularCategories trendingCategories={trendingCategories} />}
-
-        <Typography className="sidebar__main-title" variant="h4">
-          Popular blogs
+          Popular posts
         </Typography>
 
         {loadingPopularBlogs &&
