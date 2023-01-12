@@ -56,13 +56,6 @@ body {
 
 .inner-wrapper {
   width: 100%;
-  max-width: 1300px;
-  margin: 0 auto;
-  padding: 0 var(--spacing);
-}
-
-.inner-wrapper--xl {
-  width: 100%;
   max-width: 1600px;
   margin: 0 auto;
   padding: 0 var(--spacing);

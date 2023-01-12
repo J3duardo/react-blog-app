@@ -13,7 +13,7 @@
 
 .home-page__blog-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--spacing);
 }
 
@@ -30,4 +30,10 @@
 .home-page__main-title {
   text-align: left;
   font-weight: 500;
+}
+
+@media screen and (max-width: 1200px) {
+  .home-page__blog-grid {
+    grid-template-columns: 1fr;
+  }
 }

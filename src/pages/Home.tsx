@@ -104,6 +104,8 @@ const Home = () => {
         <Box className="home-page__blog-grid">
           <BlogCardSkeleton />
           <BlogCardSkeleton />
+          <BlogCardSkeleton />
+          <BlogCardSkeleton />
         </Box>
       )}
 
