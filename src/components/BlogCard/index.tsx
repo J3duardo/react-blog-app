@@ -6,7 +6,7 @@ import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import CategoryChip from "./CategoryChip";
 import BlogMetadata from "../BlogMetadata";
 import ConfirmModal from "../ConfirmModal";
-import { Blog } from "../HomePage/BlogSection";
+import { Blog } from "../../pages/Home";
 import { UserData } from "../../redux/features/authSlice";
 import { deleteBlog, DeleteBlogConfig } from "../../utils/blogCrudHandlers";
 import "./blogCard.css";

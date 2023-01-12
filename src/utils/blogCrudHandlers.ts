@@ -5,7 +5,7 @@ import { arrayUnion, deleteDoc, doc, DocumentData, DocumentReference, FirestoreE
 import { deleteObject, ref, StorageError } from "firebase/storage";
 import { db, storage } from "../firebase";
 import { setOpen } from "../redux/features/snackbarSlice";
-import { Blog } from "../components/HomePage/BlogSection";
+import { Blog } from "../pages/Home";
 import { getUserIp } from "./auth";
 import { generateFirebaseAuthErrorMsg, generateFirebaseStorageErrorMsg, generateFirestoreErrorMsg } from "./firebaseErrorMessages";
 

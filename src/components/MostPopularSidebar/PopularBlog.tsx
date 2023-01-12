@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
-import { dateFormatter } from "../../../utils/dateFormatter";
-import { Blog } from "../BlogSection";
+import { dateFormatter } from "../../utils/dateFormatter";
+import { Blog } from "../../pages/Home";
 
 interface Props {
   blogData: Blog;
@@ -11,11 +11,11 @@ const PopularBlog = ({blogData}: Props) => {
   const formattedDate = dateFormatter(createdAt);
 
   return (
-    <Box className="popular-blog__blog-item">
-      <Box className="popular-blog__blog-item__img">
+    <Box className="sidebar__blog-item">
+      <Box className="sidebar__blog-item__img">
         <img src={thumbUrl} alt={title} />
       </Box>
-      <Box className="popular-blog__blog-item__text">
+      <Box className="sidebar__blog-item__text">
         <Typography variant="h5">
           {title}
         </Typography>

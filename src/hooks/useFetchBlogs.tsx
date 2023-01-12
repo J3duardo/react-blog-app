@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { DocumentData, onSnapshot, orderBy, query, QuerySnapshot } from "firebase/firestore";
-import { Blog } from "../components/HomePage/BlogSection";
+import { Blog } from "../pages/Home";
 import { blogsCollection } from "../firebase";
 import { setOpen } from "../redux/features/snackbarSlice";
 import { arrayOccurrencesCounter } from "../utils/arrayOccurrencesCounter";

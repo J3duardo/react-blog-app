@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { doc, FirestoreError, getDoc } from "firebase/firestore";
 import { useDispatch } from "react-redux";
-import { Blog } from "../components/HomePage/BlogSection";
+import { Blog } from "../pages/Home";
 import { blogsCollection } from "../firebase";
 import { generateFirestoreErrorMsg } from "../utils/firebaseErrorMessages";
 import { setOpen } from "../redux/features/snackbarSlice";

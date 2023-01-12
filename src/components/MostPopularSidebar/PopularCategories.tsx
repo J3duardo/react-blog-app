@@ -1,6 +1,6 @@
 import { Avatar, Box, Chip } from "@mui/material";
 import { GiStarFormation } from "react-icons/gi";
-import { CategoryObj } from "../../../utils/arrayOccurrencesCounter";
+import { CategoryObj } from "../../utils/arrayOccurrencesCounter";
 
 interface Props {
   trendingCategories: CategoryObj[];

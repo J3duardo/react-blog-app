@@ -14,6 +14,7 @@ export interface AuthState {
 export interface LayoutState {
   layout: {
     navbarHeight: number,
+    sidebarWidth: number,
     pagePadding: {
       top: string,
       bottom: string

@@ -1,5 +1,18 @@
 .blog-detail {
+  position: relative;
   border-bottom: 1px solid grey;
+}
+
+.blog-detail__spinner {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.5);
+  z-index: 50
 }
 
 .blog-detail__img-wrapper {

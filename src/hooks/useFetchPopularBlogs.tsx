@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { collection, getDocs, limit, orderBy, query, where } from "firebase/firestore";
-import { Blog } from "../components/HomePage/BlogSection";
+import { Blog } from "../pages/Home";
 import { blogsCollection, db } from "../firebase";
 
 type BlogsViews = {

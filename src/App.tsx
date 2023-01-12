@@ -1,10 +1,10 @@
 import {Suspense, lazy, useEffect} from "react";
 import {useDispatch} from "react-redux";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
-import NavBar from "./components/NavBar";
 import Spinner from "./components/Spinner";
 import GenericSnackbar from "./components/GenericSnackbar";
 import ErrorBoundaries from "./components/ErrorBoundaries";
+import Layout from "./components/Layout";
 import {UserData, setCurrentUser, logoutUser, setLoading} from "./redux/features/authSlice";
 import {auth} from "./firebase";
 
@@ -67,23 +67,26 @@ const App = () => {
   return (
     <BrowserRouter>
       <ErrorBoundaries>
-        <NavBar />
-        <Suspense fallback={
-          <Spinner
-            containerHeight="100vh"
-            spinnerWidth="50px"
-            spinnerHeight="50px"
-            spinnerColor="black"
-          />}
+        <Suspense
+          fallback={
+            <Spinner
+              containerHeight="100vh"
+              spinnerWidth="50px"
+              spinnerHeight="50px"
+              spinnerColor="black"
+            />
+          }
         >
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route path="/blog/:blogId" element={<BlogDetails />} />
-            <Route path="/blog/create" element={<CreateBlogPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+              <Route path="/blog/:blogId" element={<BlogDetails />} />
+              <Route path="/blog/create" element={<CreateBlogPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Layout>
         </Suspense>
         <GenericSnackbar />
       </ErrorBoundaries>
