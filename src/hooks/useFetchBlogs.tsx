@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { DocumentData, onSnapshot, orderBy, query, QuerySnapshot } from "firebase/firestore";
-import { Blog } from "../pages/Home";
+import { Blog, SortBy } from "../pages/Home";
 import { blogsCollection } from "../firebase";
 import { setOpen } from "../redux/features/snackbarSlice";
 
 /**
  * Custom hook para cargar y paginar la lista de blogs.
  */
-const useFetchBlogs = () => {
+const useFetchBlogs = (sortBy: SortBy) => {
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(true);
   const [blogs, setBlogs] = useState<Blog[]>([]);
 
   useEffect(() => {
-    const blogsQuery = query(blogsCollection, orderBy("createdAt", "desc"));
+    const blogsQuery = query(blogsCollection, orderBy("createdAt", sortBy));
 
     const unsubscribe = onSnapshot(
       blogsQuery,
@@ -36,7 +36,7 @@ const useFetchBlogs = () => {
 
     return () => unsubscribe();
 
-  }, []);
+  }, [sortBy]);
 
   return {blogs, loading}
 };

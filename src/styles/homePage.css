@@ -17,10 +17,17 @@
   gap: var(--spacing);
 }
 
-.home-page__main-title {
+.home-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
   margin-bottom: var(--spacing);
   padding-bottom: var(--spacing-sm);
+  border-bottom: var(--mui-border-wide);
+}
+
+.home-page__main-title {
   text-align: left;
   font-weight: 500;
-  border-bottom: var(--mui-border-wide);
 }
