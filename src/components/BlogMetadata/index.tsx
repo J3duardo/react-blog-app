@@ -1,6 +1,5 @@
 import { Box, Avatar, Typography } from "@mui/material";
 import { Timestamp } from "firebase/firestore";
-import { BsDot } from "react-icons/bs";
 import { dateFormatter } from "../../utils/dateFormatter";
 import "./blogMetadata.css";
 
@@ -18,17 +17,21 @@ const BlogMetadata = ({avatar, name, date}: Props) => {
         src={avatar || ""}
         alt={name}
       />
-      <Typography className="blog-card__metadata__name" variant="body1">
-        {name}
-      </Typography>
-      <BsDot />
-      <Typography
-        className="blog-card__metadata__date"
-        variant="subtitle1"
-        title={dateFormatter(date, "MM/DD/YYYY - hh:mm a")}
-      >
-        {dateFormatter(date, "MM/DD/YYYY")}
-      </Typography>
+      <Box className="blog-card__metadata__text">
+        <Typography
+          className="blog-card__metadata__name"
+          variant="body1"
+        >
+          {name}
+        </Typography>
+        <Typography
+          className="blog-card__metadata__date"
+          variant="subtitle1"
+          title={dateFormatter(date, "MM/DD/YYYY - hh:mm a")}
+        >
+          {dateFormatter(date, "MM/DD/YYYY")}
+        </Typography>
+      </Box>
     </Box>
   )
 }

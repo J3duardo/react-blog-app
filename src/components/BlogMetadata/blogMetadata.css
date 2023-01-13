@@ -1,11 +1,32 @@
 .blog-card__metadata {
   display: flex;
+  flex-direction: row;
   justify-content: flex-start;
   align-items: center;
 }
 
 .blog-card__metadata__avatar {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   margin-right: 5px;
+}
+
+.blog-card__metadata__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.blog-card__metadata__text > * {
+  text-align: left;
+}
+
+.blog-card__metadata__name {
+  margin-bottom: 0;
+  font-weight: 500;
+}
+
+.blog-card__metadata__date {
+  opacity: 0.75;
 }

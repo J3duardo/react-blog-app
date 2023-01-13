@@ -85,6 +85,11 @@
   flex-wrap: wrap;
 }
 
+.sidebar__blog-item__title {
+  font-size: var(--paragraph);
+  font-weight: 700;
+}
+
 .sidebar__popular-blogs__link-item {
   text-decoration: none;
   color: inherit;

@@ -1,14 +1,6 @@
-.home-page__main-section {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: stretch;
-  gap: var(--spacing-lg);
-}
 
-.home-page__blog-section {
-  flex-basis: 70%;
-  flex-grow: 1;
+.home-page {
+  padding-bottom: var(--spacing-xl);
 }
 
 .home-page__blog-grid {

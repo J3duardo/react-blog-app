@@ -65,6 +65,7 @@ const MostPopular = ({offset}: Props) => {
             <PopularBlogSkeleton />
             <PopularBlogSkeleton />
             <PopularBlogSkeleton />
+            <PopularBlogSkeleton />
           </Box>
         }
 

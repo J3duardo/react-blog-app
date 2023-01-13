@@ -16,10 +16,16 @@ const PopularBlog = ({blogData}: Props) => {
         <img src={thumbUrl} alt={title} />
       </Box>
       <Box className="sidebar__blog-item__text">
-        <Typography variant="h5">
+        <Typography
+          className="sidebar__blog-item__title"
+          variant="h5"
+        >
           {title}
         </Typography>
-        <Typography variant="subtitle1">
+        <Typography
+          className="sidebar__blog-item__date"
+          variant="subtitle1"
+        >
           {formattedDate}
         </Typography>
       </Box>
