@@ -3,7 +3,7 @@ import "./blogCard.css";
 
 const BlogCardSkeleton = () => {
   return (
-    <Box className="blog-card">
+    <Box style={{height: "auto"}} className="blog-card">
       <Box className="blog-card__img-wrapper">
         <Skeleton
           style={{
@@ -19,7 +19,7 @@ const BlogCardSkeleton = () => {
           <Skeleton variant="circular" width={35} height={35} />
           <Skeleton width={"90%"} style={{fontSize: "var(--paragraph)"}} />
         </Box>
-        <Box className="blog-card__categories">
+        <Box style={{flexWrap: "nowrap"}} className="blog-card__categories">
           <Skeleton width={"30%"} height={45} />
           <Skeleton width={"30%"} height={45} />
           <Skeleton width={"30%"} height={45} />

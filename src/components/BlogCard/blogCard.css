@@ -81,3 +81,24 @@
   height: 100%;
   background-image: linear-gradient(to bottom, rgba(255,255,255, 0.2), white);
 }
+
+
+@media screen and (max-width: 900px) {
+  .blog-card {
+    height: 300px;
+  }
+
+  .blog-card__description {
+    display: none;
+  }
+
+  .blog-card button {
+    margin-top: auto;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .blog-card {
+    height: auto;
+  }
+}

@@ -7,7 +7,7 @@ interface Props {
 };
 
 const PopularBlog = ({blogData}: Props) => {
-  const {title, thumbUrl, createdAt} = blogData;
+  const {title, author: {displayName}, thumbUrl, createdAt} = blogData;
   const formattedDate = dateFormatter(createdAt);
 
   return (
@@ -23,10 +23,10 @@ const PopularBlog = ({blogData}: Props) => {
           {title}
         </Typography>
         <Typography
-          className="sidebar__blog-item__date"
+          className="sidebar__blog-item__author"
           variant="subtitle1"
         >
-          {formattedDate}
+          By: {displayName.split(" ")[0]}
         </Typography>
       </Box>
     </Box>
