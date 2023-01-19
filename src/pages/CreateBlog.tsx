@@ -216,6 +216,7 @@ const CreateBlog = () => {
             imageUrl: url,
             thumbUrl,
             imageName,
+            titleArray: values.title.toLowerCase().split(" "),
             createdAt: serverTimestamp()
           };
 
