@@ -35,7 +35,7 @@
   width: 100%;
   min-height: 25vh;
   max-height: 45vh;
-  border-radius: 4px;
+  border-top: var(--mui-border);
   background-color: white;
   box-shadow: var(--shadow-y);
   z-index: 100;
