@@ -93,7 +93,8 @@ const SearchBar = () => {
     };
 
     return () => {
-      setResults([])
+      setNoResults(false);
+      setResults([]);
     };
 
   }, [term, timerRef]);

@@ -13,6 +13,7 @@ const LoginPage = lazy(() => import("./pages/Login"));
 const SignupPage = lazy(() => import("./pages/Signup"));
 const BlogDetails = lazy(() => import("./pages/BlogDetails"));
 const CreateBlogPage = lazy(() => import("./pages/CreateBlog"));
+const SearchResults = lazy(() => import("./pages/SearchResults"));
 const NotFoundPage = lazy(() => import("./pages/NotFound"));
 
 const App = () => {
@@ -84,6 +85,7 @@ const App = () => {
               <Route path="/signup" element={<SignupPage />} />
               <Route path="/blog/:blogId" element={<BlogDetails />} />
               <Route path="/blog/create" element={<CreateBlogPage />} />
+              <Route path="/blog/search" element={<SearchResults />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Layout>

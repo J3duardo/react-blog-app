@@ -70,7 +70,7 @@ const NavBar = () => {
                   className={isActive ? "navbar__item__btn navbar__item__btn--active" : "navbar__item__btn"}
                   disableRipple
                 >
-                  Blog
+                  BLOG
                 </Button>
               )
             }}
