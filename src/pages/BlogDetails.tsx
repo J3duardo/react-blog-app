@@ -4,7 +4,7 @@ import { Box, Button, CircularProgress, Divider, IconButton, Tooltip, Typography
 import { useSelector, useDispatch } from "react-redux";
 import { collection, doc, onSnapshot} from "firebase/firestore";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
-import { AiOutlineCamera } from "react-icons/ai";
+import { BiExpand } from "react-icons/bi";
 import NotFound from "./NotFound";
 import ImageModal from "../components/ImageModal";
 import ConfirmModal from "../components/ConfirmModal";
@@ -42,6 +42,9 @@ const BlogDetails = () => {
   // Consultar la data del blog y actualizar el contador de views
   /*--------------------------------------------------------------*/
   useEffect(() => {
+    // Hacer scroll al top al entrar a la página.
+    window.scrollTo({top: 0});
+
     setLoading(true);
     setError(null);
     setBlogNotFound(false);
@@ -102,7 +105,7 @@ const BlogDetails = () => {
   /*-----------------------------------------------*/
   // Mostrar página not found si el blog no existe
   /*-----------------------------------------------*/
-  if(!loading && blogNotFound) {
+  if(!loading && !deleting && blogNotFound) {
     return <NotFound />
   };
 
@@ -169,10 +172,10 @@ const BlogDetails = () => {
                 <Tooltip title="View image">
                   <IconButton
                     className="blog-detail__img__btn"
-                    size="small"
+                    size="medium"
                     onClick={() => setOpenImageModal(true)}
                   >
-                    <AiOutlineCamera className="blog-detail__img__btn__icon" />
+                    <BiExpand className="blog-detail__img__btn__icon" />
                   </IconButton>
                 </Tooltip>
               }

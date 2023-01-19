@@ -1,8 +1,6 @@
-import {Dispatch, SetStateAction} from "react";
-import { Box, Dialog, DialogContent, IconButton } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useEffect, Dispatch, SetStateAction } from "react";
+import { Box, IconButton } from "@mui/material";
 import { FaTimes } from "react-icons/fa";
-import { LayoutState } from "../../redux/store";
 import "./imageModal.css";
 
 interface Props {
@@ -12,39 +10,50 @@ interface Props {
 };
 
 const ImageModal = ({image, open, setOpen}: Props) => {
-  const {navbarHeight} = useSelector((state: LayoutState) => state.layout);
+  // Bloquear el scroll si el modal está abierto
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";      
+    }
+  }, [open]);
+
+
+  if(!open) {
+    return null;
+  };
+
 
   return (
-    <Dialog
-      fullWidth
-      maxWidth="md"
-      className="image-dialog"
-      open={open}
-      slotProps={{
-        backdrop: {style: {backgroundColor: "rgba(0,0,0,0.9)"}}
-      }}
-      PaperProps={{
-        style: {
-          marginTop: `calc(${navbarHeight}px + var(--spacing-xl))`,
-          backgroundColor: "transparent"
-        }
-      }}
-      onClose={() => setOpen(false)}
-    >
-      <DialogContent className="image-dialog__content">
-        <IconButton
-          size="small"
-          className="image-dialog__close-icon"
-          onClick={() => setOpen(false)}
+    <Box className="image-modal" component="div" aria-modal>
+      <Box
+        className="image-modal__overlay"
+        component="div"
+        onClick={() => setOpen(false)}
+      />
+
+      <Box className="image-modal__content" component="div">
+        <Box
+          className="image-modal__img-wrapper"
+          component="div"
         >
-          <FaTimes />
-        </IconButton>
-        <Box className="image-dialog__img-wrapper">
-          <img className="image-dialog__img" src={image} alt="" />
+          <IconButton
+            size="small"
+            className="image-modal__close-icon"
+            onClick={() => setOpen(false)}
+          >
+            <FaTimes />
+          </IconButton>
+          <img
+            className="image-modal__img"
+            src={image}
+            alt=""
+          />
         </Box>
-      </DialogContent>
-    </Dialog>
-  )
+      </Box>
+    </Box>
+  );
 };
 
 export default ImageModal;
