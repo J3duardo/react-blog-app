@@ -1,9 +1,9 @@
 import { Dispatch as ReactDispatch, SetStateAction } from "react";
 import { AnyAction, Dispatch as ReduxDispatch } from "@reduxjs/toolkit";
 import { AuthError } from "firebase/auth";
-import { arrayUnion, deleteDoc, doc, DocumentData, DocumentReference, FirestoreError, getDoc, setDoc } from "firebase/firestore";
+import { arrayUnion, deleteDoc, doc, DocumentData, DocumentReference, FirestoreError, getDoc, getDocs, orderBy, query, setDoc, where } from "firebase/firestore";
 import { deleteObject, ref, StorageError } from "firebase/storage";
-import { db, storage } from "../firebase";
+import { blogsCollection, db, storage } from "../firebase";
 import { setOpen } from "../redux/features/snackbarSlice";
 import { Blog } from "../pages/Home";
 import { getUserIp } from "./auth";
@@ -121,4 +121,41 @@ export const deleteBlog = async ({blogData, dispatch}: DeleteBlogConfig) => {
     dispatch(setOpen({open: true, message}));
 
   };
+};
+
+
+/**
+ * Buscar posts por título especificando el término de búsqueda.
+ * @param term Término de búsqueda de los posts.
+ */
+export const searchByTitle = async (term: string): Promise<Blog[]> => {
+  try {
+    const termArr = term.split(" ").map(term => term.toLowerCase());
+
+    const searchQuery = query(
+      blogsCollection,
+      where("titleArray", "array-contains-any", termArr),
+      orderBy("createdAt", "desc")
+    );
+
+    const docsSnap = await getDocs(searchQuery);
+
+    const results = docsSnap.docs.map(doc => {
+      return {id: doc.id, ...doc.data()}
+    }) as Blog[];
+
+    return results;
+
+  } catch (error: any) {
+    console.log(`Error searching posts`, error);
+
+    let message: string = error.message;
+    const err = error as FirestoreError;
+
+    if(err.code) {
+      message = generateFirestoreErrorMsg(err.code);
+    };
+
+    throw new Error(message);
+  }
 };

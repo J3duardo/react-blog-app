@@ -2,6 +2,7 @@ import {useState, useEffect, useRef, MutableRefObject} from "react";
 import {NavLink, useNavigate, useLocation} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
 import {AppBar, Toolbar, Button, Box, Avatar} from "@mui/material";
+import SearchBar from "./SearchBar";
 import VerificationWarning from "./VerificationWarning";
 import Spinner from "../Spinner";
 import useResizeObserver from "../../hooks/useResizeObserver";
@@ -75,6 +76,8 @@ const NavBar = () => {
             }}
           </NavLink>
         </Box>
+
+        <SearchBar />
 
         {loading &&
           <Box className="navbar__spinner" position="relative">
