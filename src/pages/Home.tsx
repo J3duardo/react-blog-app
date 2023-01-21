@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Box, Divider, IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
+import { useState, useEffect } from "react";
+import { Box, Button, Divider, IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { BsArrowDown, BsArrowUp, BsFilter } from "react-icons/bs";
-import { AuthState } from "../redux/store";
+import { AuthState, LayoutState } from "../redux/store";
 import BlogCard from "../components/BlogCard";
 import BlogCardSkeleton from "../components/BlogCard/BlogCardSkeleton";
 import useFetchBlogs from "../hooks/useFetchBlogs";
@@ -28,22 +28,69 @@ export type SortBy = "asc" | "desc";
 
 const Home = () => {
   const {user} = useSelector((state: AuthState) => state.auth);
+  const navbarHeight = useSelector((state: LayoutState) => state.layout.navbarHeight);
 
   // Anchor del dropdown del sort
   const [anchorElement, setAnchorElement] = useState<HTMLButtonElement | null>(null);
   const [sortBy, setSortBy] = useState<SortBy>("desc");
 
+  const [loadMore, setLoadMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [docsCount, setDocsCount] = useState(0);
+  const [isLastPage, setIsLastPage] = useState(false);
+  
   // Consultar los blogs
-  const {blogs, loading} = useFetchBlogs(sortBy);
+  const {blogs, setBlogs, loading} = useFetchBlogs(
+    sortBy,
+    loadMore,
+    setLoadMore,
+    setLoadingMore,
+    setDocsCount
+  );
 
-  // Click handler del menú sort
+
+  // Determinar si es la última página de posts
+  // para deshabilitar/habilitar el botón de cargar mas.
+  useEffect(() => {
+    if(blogs.length === docsCount) {
+      setIsLastPage(true);
+    } else {
+      setIsLastPage(false);
+    };
+  }, [blogs, docsCount]);
+
+
+  /**
+   * Ordenar los posts en el frontend
+   * por fecha ascendente o descedente.
+   */
   const onSortHandler = (orderBy: SortBy) => {
+    if(orderBy === "asc") {
+      const sorted = blogs.sort((a, b) => {
+        return a.createdAt.toDate().getTime() - b.createdAt.toDate().getTime()
+      });
+
+      setBlogs(sorted)
+    };
+
+    if(orderBy === "desc") {
+      const sorted = blogs.sort((a, b) => {
+        return b.createdAt.toDate().getTime() - a.createdAt.toDate().getTime()
+      });
+
+      setBlogs(sorted)
+    }
+
     setSortBy(orderBy);
     setAnchorElement(null);
   };
 
   return (
-    <Box className="home-page" component="section">
+    <Box
+      style={{minHeight: `calc(100vh - ${navbarHeight}px - 24px)`}}
+      className="home-page"
+      component="section"
+    >
       <Box className="home-page__header">
         <Typography className="home-page__main-title" variant="h4">
           Recent Posts
@@ -113,6 +160,26 @@ const Home = () => {
         <Box className="home-page__blog-grid">
           {blogs.map(blog => <BlogCard key={blog.id} blog={blog} user={user} />)}
         </Box>
+      }
+
+      {loadingMore &&
+        <Box className="home-page__blog-grid">
+          <BlogCardSkeleton />
+          <BlogCardSkeleton />
+        </Box>
+      }
+
+      {!loading &&
+        <Button
+          className="home-page__load-more-btn"
+          disabled={loadingMore || isLastPage}
+          onClick={() => {
+            setLoadMore(true);
+            setLoadingMore(true)
+          }}
+        >
+          {!isLastPage ? "Load more" : "No more posts available."}
+        </Button>
       }
     </Box>
   )

@@ -1,12 +1,16 @@
-
 .home-page {
-  padding-bottom: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  padding-bottom: var(--spacing);
 }
 
 .home-page__blog-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--spacing);
+  margin-bottom: var(--spacing);
 }
 
 .home-page__header {
@@ -22,6 +26,13 @@
 .home-page__main-title {
   text-align: left;
   font-weight: 500;
+}
+
+.home-page__load-more-btn {
+  margin-top: auto;
+  align-self: center;
+  font-size: var(--paragraph);
+  text-transform: none;
 }
 
 @media screen and (max-width: 1200px) {
