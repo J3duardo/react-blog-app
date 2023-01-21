@@ -11,6 +11,9 @@ export const generateFirebaseAuthErrorMsg = (errorCode: string) => {
     case "auth/email-already-exists":
       errMessage = "The email is already used by another account.";
       break;
+    case "auth/network-request-failed":
+      errMessage = "Network error. Check your connection and try again.";
+      break;
     case "auth/internal-error":
       errMessage = "Internal server error. Try again later.";
       break;
