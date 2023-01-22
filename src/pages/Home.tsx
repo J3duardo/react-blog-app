@@ -87,7 +87,10 @@ const Home = () => {
 
   return (
     <Box
-      style={{minHeight: `calc(100vh - ${navbarHeight}px - 24px)`}}
+      style={{
+        minHeight: `calc(100vh - ${navbarHeight}px - 24px)`,
+        paddingBottom: sortBy === "desc" ? 0 : "var(--spacing-lg)"
+      }}
       className="home-page"
       component="section"
     >
@@ -147,6 +150,7 @@ const Home = () => {
         </Menu>
       </Box>
 
+      {/* Loader de la primera página de posts */}
       {loading && (
         <Box className="home-page__blog-grid">
           <BlogCardSkeleton />
@@ -156,21 +160,39 @@ const Home = () => {
         </Box>
       )}
 
+      {/* Grid de los posts */}
       {!loading &&
         <Box className="home-page__blog-grid">
           {blogs.map(blog => <BlogCard key={blog.id} blog={blog} user={user} />)}
         </Box>
       }
 
+      {/*
+        Loader para indicar la carga de los siguientes posts.
+        Si se ordenan descendentemente, aparece debajo de los posts y encima del botón.
+        Si se ordenan ascendentemente, aparece encima de los posts y debajo del botón.
+      */}
       {loadingMore &&
-        <Box className="home-page__blog-grid">
+        <Box
+          style={{order: sortBy === "desc" ? 30 : 16}}
+          className="home-page__blog-grid"
+        >
           <BlogCardSkeleton />
           <BlogCardSkeleton />
         </Box>
       }
 
+      {/*
+        Botón para cargar más posts.
+        Si se ordenan descendentemente, se muestra debajo de los posts y debajo del loader.
+        Si se ordenan ascendentemente, se muestra encima de los posts y encima del loader.
+      */}
       {!loading &&
         <Button
+          style={{
+            marginTop: sortBy === "desc" ? "auto" : "0",
+            order: sortBy === "desc" ? 31 : 15
+          }}
           className="home-page__load-more-btn"
           disabled={loadingMore || isLastPage}
           onClick={() => {
@@ -178,7 +200,7 @@ const Home = () => {
             setLoadingMore(true)
           }}
         >
-          {!isLastPage ? "Load more" : "No more posts available."}
+          {!isLastPage ? "Load older posts" : "No more posts available."}
         </Button>
       }
     </Box>
