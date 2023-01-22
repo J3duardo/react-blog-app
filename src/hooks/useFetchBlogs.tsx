@@ -1,12 +1,45 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { DocumentData, DocumentSnapshot, endBefore, FirestoreError, getCountFromServer, getDocs, limit, onSnapshot, orderBy, query, QuerySnapshot, startAfter } from "firebase/firestore";
+import { DocumentData, DocumentSnapshot, endBefore, FirestoreError, getCountFromServer, getDocs, limit, orderBy, Query, query, startAfter } from "firebase/firestore";
 import { Blog, SortBy } from "../pages/Home";
 import { blogsCollection } from "../firebase";
 import { setOpen } from "../redux/features/snackbarSlice";
 import { generateFirestoreErrorMsg } from "../utils/firebaseErrorMessages";
 
 const limitAmount = 4;
+
+/**
+ * Query para consultar las siguientes páginas de posts
+ * en el orden especificado.
+ * @param sort Orden cronológico en el que se van a consultar los posts (asc | desc)
+ * @param firstItem Primer documento del resultado del query.
+ * @param lastItem Último documento del resultado del query.
+ */
+const POSTS_QUERY = (
+  sort: SortBy,
+  firstItem: DocumentSnapshot<DocumentData>,
+  lastItem: DocumentSnapshot<DocumentData>
+) => {
+  let blogsQuery: Query<DocumentData>;
+
+  if(sort === "desc") {
+    blogsQuery = query(
+      blogsCollection,
+      orderBy("createdAt", "desc"),
+      startAfter(lastItem),
+      limit(limitAmount)
+    );
+  } else {
+    blogsQuery = query(
+      blogsCollection,
+      orderBy("createdAt", "asc"),
+      endBefore(firstItem),
+      limit(limitAmount)
+    );
+  };
+
+  return blogsQuery;
+};
 
 /**
  * Custom hook para cargar y paginar la lista de blogs.
@@ -42,43 +75,41 @@ const useFetchBlogs = (
    * Cargar la primera página de posts.
    */
   useEffect(() => {
-    setLoading(true);
-
     const blogsQuery = query(blogsCollection, orderBy("createdAt", sortBy), limit(limitAmount));
 
-    const unsubscribe = onSnapshot(
-      blogsQuery,
-      (snapshot: QuerySnapshot<DocumentData>) => {
-        const blogsList = snapshot.docs.map((doc) => {
-          return {...doc.data(), id: doc.id}
-        }) as Blog[];
+    getDocs(blogsQuery)
+    .then((data) => {
+      const posts = data.docs.map((doc) => {
+        return {
+          id: doc.id,
+          ...doc.data()
+        }
+      }) as Blog[];
 
-        const firstDoc = snapshot.docs[0];
-        const lastDoc = snapshot.docs[snapshot.docs.length - 1];
+      const firstDoc = data.docs[0];
+      const lastDoc = data.docs[data.docs.length - 1];
 
-        setFirstItem(firstDoc);
-        setLastItem(lastDoc);
-        setBlogs(blogsList);
-        setLoading(false);
-      },
-      (error) => {
-        console.log(error.message);
-        dispatch(setOpen({open: true, message: "Error loading blogs."}))
-        setLoading(false);
-      }
-    );
-
-    return () => unsubscribe();
+      setFirstItem(firstDoc);
+      setLastItem(lastDoc);
+      setBlogs(posts);
+    })
+    .catch((error: FirestoreError) => {
+      console.log(error.message);
+      dispatch(setOpen({open: true, message: "Error loading blogs."}))
+    })
+    .finally(() => {
+      setLoading(false);
+    });
 
   }, []);
 
 
   /**
-   * Cargar los posts con paginación.
+   * Cargar las siguientes páginas de posts
+   * al clickear el botón de cargar más.
    */
   useEffect(() => {
     if(loadMore) {
-
       // Retornar sin ejecutar el query si
       // no se proporciona el first o el last item.
       if(!firstItem || !lastItem) {
@@ -86,26 +117,13 @@ const useFetchBlogs = (
         return setLoadingMore(false);
       };
 
-      // Query para consultar en orden descendente (Newest first).
-      const blogsQueryDesc = query(
-        blogsCollection,
-        orderBy("createdAt", sortBy),
-        startAfter(lastItem),
-        limit(limitAmount)
-      );
-
-      // Query para consultar en orden ascendente (Oldest first).
-      const blogsQueryAsc = query(
-        blogsCollection,
-        orderBy("createdAt", sortBy),
-        endBefore(firstItem),
-        limit(limitAmount)
-      );
+      // Generar el query para consultar los posts en el orden especificado.
+      const postsQuery = POSTS_QUERY(sortBy, firstItem, lastItem);
         
       setLoadingMore(true);
 
       // Ejecutar el query.
-      getDocs(sortBy === "desc" ? blogsQueryDesc : blogsQueryAsc)
+      getDocs(postsQuery)
       .then((docsSnapshot) => {
         const firstDoc = docsSnapshot.docs[0];
         const lastDoc = docsSnapshot.docs[docsSnapshot.docs.length - 1];
@@ -120,7 +138,13 @@ const useFetchBlogs = (
           }
         }) as Blog[];
   
-        setBlogs((prev) => [...prev, ...docs]);
+        // Si el orden es descendente, agregar los siguientes posts debajo en el timeline,
+        // si el orden es ascendente, agregarlos encima.
+        if(sortBy === "desc") {
+          setBlogs((prev) => [...prev, ...docs])
+        } else {
+          setBlogs((prev) => [...docs, ...prev])
+        };
   
       })
       .catch((error: FirestoreError) => {
