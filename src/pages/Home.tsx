@@ -5,6 +5,7 @@ import { BsArrowDown, BsArrowUp, BsFilter } from "react-icons/bs";
 import { AuthState, LayoutState } from "../redux/store";
 import BlogCard from "../components/BlogCard";
 import BlogCardSkeleton from "../components/BlogCard/BlogCardSkeleton";
+import GoToTopBtn from "../components/GoToTopBtn";
 import useFetchBlogs from "../hooks/useFetchBlogs";
 import { UserData } from "../redux/features/authSlice";
 import { Timestamp } from "firebase/firestore";
@@ -203,6 +204,9 @@ const Home = () => {
           {!isLastPage ? "Load older posts" : "No more posts available."}
         </Button>
       }
+
+      {/* Botón go to top */}
+      <GoToTopBtn />
     </Box>
   )
 };
