@@ -7,6 +7,7 @@ import ErrorBoundaries from "./components/ErrorBoundaries";
 import Layout from "./components/Layout";
 import {UserData, setCurrentUser, logoutUser, setLoading} from "./redux/features/authSlice";
 import {auth} from "./firebase";
+import GoToTopBtn from "./components/GoToTopBtn";
 
 const HomePage = lazy(() => import("./pages/Home"));
 const LoginPage = lazy(() => import("./pages/Login"));
@@ -91,6 +92,9 @@ const App = () => {
           </Layout>
         </Suspense>
         <GenericSnackbar />
+
+        {/* Botón global para ir al top de las páginas */}
+        <GoToTopBtn />
       </ErrorBoundaries>
     </BrowserRouter>
   );
