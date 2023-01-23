@@ -1,3 +1,12 @@
+.search-results-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: var(--spacing);
+  width: 100%;
+}
+
 .search-results {
   display: flex;
   flex-direction: column;
@@ -6,7 +15,6 @@
   gap: var(--spacing-xl);
   width: 100%;
   max-width: 700px;
-  min-height: 85vh;
   padding: var(--spacing-lg) 0;
 }
 
@@ -48,4 +56,11 @@
 .search-result__excerpt {
   font-size: var(--paragraph);
   line-height: var(--line-height);
+}
+
+.search-result__load-more {
+  display: block;
+  margin-top: auto;
+  align-self: center;
+  text-transform: none;
 }
