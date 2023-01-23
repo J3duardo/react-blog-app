@@ -1,7 +1,7 @@
 import { Dispatch as ReactDispatch, SetStateAction } from "react";
 import { AnyAction, Dispatch as ReduxDispatch } from "@reduxjs/toolkit";
 import { AuthError } from "firebase/auth";
-import { arrayUnion, deleteDoc, doc, DocumentData, DocumentReference, FirestoreError, getDoc, getDocs, orderBy, query, setDoc, where } from "firebase/firestore";
+import { arrayUnion, deleteDoc, doc, DocumentData, DocumentReference, DocumentSnapshot, FirestoreError, getCountFromServer, getDoc, getDocs, limit, orderBy, query, setDoc, where } from "firebase/firestore";
 import { deleteObject, ref, StorageError } from "firebase/storage";
 import { blogsCollection, db, storage } from "../firebase";
 import { setOpen } from "../redux/features/snackbarSlice";
@@ -17,6 +17,13 @@ export interface DeleteBlogConfig {
 export interface BlogViews {
   blogId: string;
   views: string[];
+};
+
+interface SearchByTitlePromise {
+  results: Blog[];
+  firstDoc: DocumentSnapshot<DocumentData>;
+  lastDoc: DocumentSnapshot<DocumentData>;
+  count: number;
 };
 
 /**
@@ -127,24 +134,36 @@ export const deleteBlog = async ({blogData, dispatch}: DeleteBlogConfig) => {
 /**
  * Buscar posts por título especificando el término de búsqueda.
  * @param term Término de búsqueda de los posts.
+ * @param limitAmount Cantidad de resultados a devolver por página.
  */
-export const searchByTitle = async (term: string): Promise<Blog[]> => {
+export const searchByTitle = async (term: string, limitAmount: number): Promise<SearchByTitlePromise> => {
   try {
     const termArr = term.split(" ").map(term => term.toLowerCase());
 
-    const searchQuery = query(
+    const searchCountQuery = query(
       blogsCollection,
-      where("titleArray", "array-contains-any", termArr),
-      orderBy("createdAt", "desc")
+      where("titleArray", "array-contains-any", termArr)
     );
 
-    const docsSnap = await getDocs(searchQuery);
+    // Consultar el número total de resultados.
+    const resultsCount = await getCountFromServer(searchCountQuery);
+
+    const searchQueryWithLimit = query(
+      blogsCollection,
+      where("titleArray", "array-contains-any", termArr),
+      orderBy("createdAt", "desc"),
+      limit(limitAmount)
+    );
+
+    const docsSnap = await getDocs(searchQueryWithLimit);
+    const firstDoc = docsSnap.docs[0];
+    const lastDoc = docsSnap.docs[docsSnap.docs.length - 1];
 
     const results = docsSnap.docs.map(doc => {
       return {id: doc.id, ...doc.data()}
     }) as Blog[];
 
-    return results;
+    return {results, firstDoc, lastDoc, count: resultsCount.data().count};
 
   } catch (error: any) {
     console.log(`Error searching posts`, error);
