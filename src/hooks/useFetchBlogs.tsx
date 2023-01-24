@@ -2,11 +2,10 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { DocumentData, DocumentSnapshot, endBefore, FirestoreError, getCountFromServer, getDocs, limit, orderBy, Query, query, startAfter } from "firebase/firestore";
 import { Blog, SortBy } from "../pages/Home";
+import { limitAmount } from "../components/NavBar/SearchBar";
 import { blogsCollection } from "../firebase";
 import { setOpen } from "../redux/features/snackbarSlice";
 import { generateFirestoreErrorMsg } from "../utils/firebaseErrorMessages";
-
-const limitAmount = 4;
 
 /**
  * Query para consultar las siguientes páginas de posts

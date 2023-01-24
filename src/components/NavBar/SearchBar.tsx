@@ -9,28 +9,8 @@ import { Blog } from "../../pages/Home";
 import { searchByTitle } from "../../utils/blogCrudHandlers";
 import { setOpen } from "../../redux/features/snackbarSlice";
 
+export const limitAmount = 5;
 export type SearchResult = Pick<Blog, "id" | "title" | "description" | "thumbUrl">
-
-const TEST_RESULTS = [
-  {
-    id: "5JDRMZqd8OEeJYA0q1Y5",
-    title: "JavaScript",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor lectus nibh.",
-    thumbUrl: "https://firebasestorage.googleapis.com/v0/b/blog-app-60059.appspot.com/o/blogs%2Fe527npa7pINxNgl485JABNXnx1g2%2FJavascript%2Fpreview-1672874264346-unofficial_javascript_logo_2.svg.png?alt=media&token=ff1455ef-1786-4f3a-ab0d-4f1b42cac2af"
-  },
-  {
-    id: "NxNgpZqNCgLYjGJq8vvX",
-    title: "Benefits of ReactJS",
-    description: "Mauris blandit aliquet elit, eget tincidunt nibh pulvinar",
-    thumbUrl: "https://firebasestorage.googleapis.com/v0/b/blog-app-60059.appspot.com/o/blogs%2FO4jG16DGkXQdbkTyFnpoidQ9f7H2%2FBenefits%20of%20React%20JS%2Fpreview-1672792812574-pdib9r9rk5j1m7oala1p.webp?alt=media&token=fe1174de-49dc-417c-88e6-7f6cfbb7e160"
-  },
-  {
-    id: "v2FP14bKAFiDBiOIRcXE",
-    title: "Sunsets and Their Magic Light",
-    description: "Lorem ipsum consectetur adipiscing elit. Sed porttitor lectus nibh.",
-    thumbUrl: "https://firebasestorage.googleapis.com/v0/b/blog-app-60059.appspot.com/o/blogs%2Fe527npa7pINxNgl485JABNXnx1g2%2FSuntets%20and%20Their%20Magic%20Light%2Fpreview-1672777108495-dsc_7022.jpg?alt=media&token=b5769d7f-61ce-49d2-b7b7-91de36b27b93"
-  }
-] satisfies SearchResult[];
 
 
 const SearchBar = () => {
@@ -71,14 +51,14 @@ const SearchBar = () => {
       setHideList(false);
       
       timerRef.current = setTimeout(() => {
-        searchByTitle(term)
-        .then((data) => {
-          const length = data.length;
+        searchByTitle(term, limitAmount)
+        .then(({results}) => {
+          const length = results.length;
 
           if(length <= 0) {
             setNoResults(true);
           } else {
-            setResults(data);
+            setResults(results);
           };
         })
         .catch((err: Error) => {
