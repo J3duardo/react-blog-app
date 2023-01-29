@@ -309,6 +309,19 @@ const CreateBlog = () => {
               {loading && uploadProgress! < 100 && (editMode ? "Updating..." : "Uploading blog...")}
               {loading && uploadProgress === 100 && "Finishing..."}
             </Button>
+
+            {editMode && !loading && !loadingValues &&
+              <Button
+                className="create-blog__button"
+                variant="text"
+                type="button"
+                disabled={loading || loadingValues}
+                onClick={() => navigate(`/blog/${editedBlogId}`, {replace: true})}
+              >
+                Cancel update
+              </Button>
+            }
+            
             <Button
               style={{display: uploadProgress && uploadProgress < 100 ? "flex" : "none"}}
               className="create-blog__button"
