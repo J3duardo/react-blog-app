@@ -1,6 +1,6 @@
 .blog-detail {
   position: relative;
-  padding-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-xl);
   border-bottom: 1px solid grey;
 }
 

@@ -10,6 +10,7 @@ import ImageModal from "../components/ImageModal";
 import ConfirmModal from "../components/ConfirmModal";
 import BlogMetadata from "../components/BlogMetadata";
 import CategoryChip from "../components/BlogCard/CategoryChip";
+import BlogCommentSection from "../components/BlogCommentSection";
 import { Blog } from "./Home";
 import { deleteBlog, DeleteBlogConfig, updateBlogViews } from "../utils/blogCrudHandlers";
 import { AuthState, LayoutState } from "../redux/store";
@@ -29,7 +30,7 @@ const BlogDetails = () => {
   const [blogViews, setBlogViews] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [blogNotFound, setBlogNotFound] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [_error, setError] = useState<string | null>(null);
 
   const [showImageModalBtn, setShowImageModalBtn] = useState(false);
   const [openImageModal, setOpenImageModal] = useState(false);
@@ -249,21 +250,27 @@ const BlogDetails = () => {
 
             <Divider style={{margin: "var(--spacing) 0"}} />
 
+            {/* Categorías del post */}
             <Box className="blog-detail__categories">
               {blogDetails!.categories.map(category => {
                 return <CategoryChip key={category} category={category} />
               })}
             </Box>
 
+            {/* Título del post */}
             <Typography className="blog-detail__title" variant="h3">
               {blogDetails!.title}
             </Typography>
 
             <Divider style={{marginBottom: "var(--spacing)"}} />
 
+            {/* Contenido del post */}
             <Typography className="blog-detail__description">
               {blogDetails!.description}
             </Typography>
+
+            {/* Seccción de comentarios del post */}
+            <BlogCommentSection postId={blogId!} />
           </Box>
         </>
       }

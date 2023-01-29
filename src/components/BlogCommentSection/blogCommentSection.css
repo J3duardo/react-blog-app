@@ -1,0 +1,139 @@
+.blog-comment__divider {
+  width: 100%;
+  margin: var(--spacing-lg) 0;
+  padding: 5px var(--spacing-sm);
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.25);
+}
+
+
+/* Estilos del input del comentario */
+.blog-comment__input-box {
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: var(--spacing);
+  width: 100%;
+}
+
+.blog-comment__avatar-wrapper {
+  position: relative;
+}
+
+.blog-comment__avatar {
+  width: 45px;
+  height: 45px;
+  flex-shrink: 0;
+}
+
+.blog-comment__online-indicator {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  outline: 2px solid white;
+  background-color: #9b9b9b;
+}
+
+.blog-comment__input-field {
+  flex-grow: 1;
+}
+
+.blog-comment__input-field .MuiInputAdornment-root {
+  height: auto;
+}
+
+.blog-comment__input-adornments-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  gap: 3px;
+  margin-left: 8px;
+  border-left: 1px solid #ccc;
+}
+
+.blog-comment__emoji-picker {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: max-content;
+  height: auto;
+  transform: translateY(-100%);
+  box-shadow: var(--shadow-y);
+  z-index: 1000;
+}
+
+.blog-comment__emoji-picker-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+}
+
+
+/* Estilos de la lista de comentarios */
+.blog-comment__comment-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+}
+
+
+/* Estilos del comentario individual */
+.blog-comment__single-comment {
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: var(--spacing);
+  width: 100%;
+  padding: var(--spacing-sm);
+  border-radius: 5px;
+}
+
+.blog-comment__user-actions {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+.blog-comment__single-comment__avatar {
+  width: 45px;
+  height: 45px;
+}
+
+.blog-comment__single-comment__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.blog-comment__single-comment__metadata {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.blog-comment__single-comment__username {
+  font-size: var(--paragraph);
+  font-weight: 700;
+  text-align: left;
+}
+
+.blog-comment__single-comment__date {
+  opacity: 0.75;
+}
+
+.blog-comment__single-comment__text {
+  text-align: left;
+  line-height: var(--line-height);
+  white-space: pre-line;
+}
