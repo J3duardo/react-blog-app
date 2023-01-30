@@ -37,7 +37,12 @@ const Login = () => {
       dispatch
     } satisfies AuthConfig;
 
-    await authHandler(authConfig);
+    const result = await authHandler(authConfig);
+
+    // No redirigir en caso de error de autenticación
+    if (result === "failed") {
+      return false;
+    };
 
     // Redirigir a la página anterior (si aplica)
     // o al home, en su defecto.

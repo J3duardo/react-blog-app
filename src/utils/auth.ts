@@ -49,9 +49,11 @@ export const authHandler = async (config: AuthConfig) => {
     try {
       const {email, password} = values;
       await signInWithEmailAndPassword(auth, email, password);
+      return "success";
       
     } catch (error: unknown) {
       loginErrorHandler(error, methods, setBackendError);
+      return "failed";
       
     } finally {
       setLoading(false);
@@ -75,8 +77,11 @@ export const authHandler = async (config: AuthConfig) => {
       const currentUser = JSON.parse(localStorage.getItem("currentUser")!);
       dispatch(setCurrentUser({...currentUser, displayName: name + " " + lastname}));
 
+      return "success";
+
     } catch (error: unknown) {
       signupErrorHandler(error, methods, setBackendError);
+      return "failed";
 
     } finally {
       setLoading(false);
