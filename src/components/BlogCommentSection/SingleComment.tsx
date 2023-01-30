@@ -12,12 +12,14 @@ interface Props {
 };
 
 const SingleComment = ({data, currentUser}: Props) => {
-  const {comment, user: {userId, avatar, name}, createdAt} = data;
+  const {id, comment, user: {userId, avatar, name}, createdAt} = data;
 
+  const [loading, setLoading] = useState(false);
   const [anchorElement, setAnchorElement] = useState<HTMLButtonElement | null>(null);
 
   return (
     <Box
+      style={{opacity: loading ? 0.5 : 1}}
       className="blog-comment__single-comment card-shadow"
       component="article"
     >
@@ -35,6 +37,9 @@ const SingleComment = ({data, currentUser}: Props) => {
 
       {/* Dropdown de editar y borrar comentario */}
       <UserActionsDropdown
+        commentId={id}
+        loading={loading}
+        setLoading={setLoading}
         anchorElement={anchorElement}
         setAnchorElement={setAnchorElement}
       />
