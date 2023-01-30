@@ -69,7 +69,7 @@ const SingleComment = ({data, currentUser}: Props) => {
         </Box>
 
         <Box className="blog-comment__single-comment__text">
-          <Typography variant="body1">
+          <Typography variant="subtitle1">
             {comment}
           </Typography>
         </Box>
