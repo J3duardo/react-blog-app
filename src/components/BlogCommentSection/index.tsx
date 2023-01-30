@@ -151,14 +151,11 @@ const BlogCommentInput = ({postId}: Props) => {
       {user &&
         <>
           <Box className="blog-comment__input-box">
-            <Box className="blog-comment__avatar-wrapper">
-              <Avatar
-                src={user.photoURL || ""}
-                className="blog-comment__avatar"
-                sizes="large"
-              />
-              <Box className="blog-comment__online-indicator"/>
-            </Box>
+            <Avatar
+              src={user.photoURL || ""}
+              className="blog-comment__avatar"
+              sizes="large"
+            />
 
             {openEmojiPicker &&
               <>

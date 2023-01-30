@@ -1,21 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Avatar, Box, IconButton, Typography } from "@mui/material";
+import { collection, doc, onSnapshot } from "firebase/firestore";
 import { BsChevronDown, BsDot } from "react-icons/bs";
 import UserActionsDropdown from "./UserActionsDropdown";
 import { CommentContent } from "./index";
 import { UserData } from "../../redux/features/authSlice";
 import { dateFormatter } from "../../utils/dateFormatter";
+import { db } from "../../firebase";
 
 interface Props {
   data: CommentContent;
   currentUser: UserData | null;
 };
 
+interface OnlineUser {
+  userId: string;
+  isOnline: boolean;
+};
+
 const SingleComment = ({data, currentUser}: Props) => {
   const {id, comment, user: {userId, avatar, name}, createdAt} = data;
 
   const [loading, setLoading] = useState(false);
+  const [isAuthorOnline, setIsAuthorOnline] = useState(false);
   const [anchorElement, setAnchorElement] = useState<HTMLButtonElement | null>(null);
+
+
+  /*---------------------------------------------------------------------*/
+  // Actualizar el estado online del autor del comentario en tiempo real
+  /*---------------------------------------------------------------------*/
+  useEffect(() => {
+    const onlineUserDocRef = doc(collection(db, "onlineUsers"), userId);
+
+    const unsubscribe = onSnapshot(onlineUserDocRef, (snapshot) => {
+      const {isOnline} = snapshot.data() as OnlineUser;
+      setIsAuthorOnline(isOnline);
+    });
+
+    return () => unsubscribe();
+
+  }, []);
+
 
   return (
     <Box
@@ -44,10 +69,16 @@ const SingleComment = ({data, currentUser}: Props) => {
         setAnchorElement={setAnchorElement}
       />
 
-      <Avatar
-        className="blog-comment__single-comment__avatar"
-        src={avatar || ""}
-      />
+      <Box className="blog-comment__single-comment__avatar-wrapper">
+        <Avatar
+          className="blog-comment__single-comment__avatar"
+          src={avatar || ""}
+        />
+        <Box
+          style={{backgroundColor: isAuthorOnline ? "green" : "#9b9b9b"}}
+          className="blog-comment__single-comment__online-indicator"
+        />
+      </Box>
 
       <Box className="blog-comment__single-comment__content">
         <Box className="blog-comment__single-comment__metadata">
