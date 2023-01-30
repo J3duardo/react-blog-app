@@ -1,7 +1,8 @@
 import {useState, useEffect, useRef, MutableRefObject} from "react";
+import {AppBar, Toolbar, Button, Box, Avatar} from "@mui/material";
 import {NavLink, useNavigate, useLocation} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
-import {AppBar, Toolbar, Button, Box, Avatar} from "@mui/material";
+import {collection, doc, setDoc} from "firebase/firestore";
 import SearchBar from "./SearchBar";
 import VerificationWarning from "./VerificationWarning";
 import Spinner from "../Spinner";
@@ -9,7 +10,7 @@ import useResizeObserver from "../../hooks/useResizeObserver";
 import {AuthState} from "../../redux/store";
 import {logoutUser} from "../../redux/features/authSlice";
 import {setNavbarHeight, setPagePadding} from "../../redux/features/layoutSlice";
-import {auth} from "../../firebase";
+import {auth, db} from "../../firebase";
 import "./navBar.css";
 
 const MENU_ITEMS_NOAUTH = [
@@ -45,9 +46,19 @@ const NavBar = () => {
   const logoutHandler = async () => {
     try {
       setLoggingOut(true);
+
+      // Pasar el estado a offline
+      await setDoc(
+        doc(collection(db, "onlineUsers"), user!.uid),
+        {userId: user!.uid, isOnline: false},
+        {merge: true}
+      );
+
       await auth.signOut();
+
       dispatch(logoutUser());
-      navigate("/login", {replace: true});      
+      navigate("/login", {replace: true});
+
     } catch (error: any) {
       console.log(`Error logging user out`, error.message);
     } finally {

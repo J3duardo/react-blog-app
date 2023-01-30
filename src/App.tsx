@@ -1,12 +1,13 @@
 import {Suspense, lazy, useEffect} from "react";
 import {useDispatch} from "react-redux";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
+import {collection, doc, setDoc} from "firebase/firestore";
 import Spinner from "./components/Spinner";
 import GenericSnackbar from "./components/GenericSnackbar";
 import ErrorBoundaries from "./components/ErrorBoundaries";
 import Layout from "./components/Layout";
 import {UserData, setCurrentUser, logoutUser, setLoading} from "./redux/features/authSlice";
-import {auth} from "./firebase";
+import {auth, db} from "./firebase";
 import GoToTopBtn from "./components/GoToTopBtn";
 
 const HomePage = lazy(() => import("./pages/Home"));
@@ -22,8 +23,8 @@ const App = () => {
 
   useEffect(() => {
     // Listener de los cambios de autenticación
-    auth.onAuthStateChanged((user) => {
-      if (user) {
+    auth.onAuthStateChanged(async (user) => {
+      if (user){
         const userData: UserData = {
           uid: user.uid,
           displayName: user.displayName || "",
@@ -31,6 +32,13 @@ const App = () => {
           emailVerified: user.emailVerified,
           photoURL: user.photoURL
         };
+
+        // Actualizar el estado a online
+        await setDoc(
+          doc(collection(db, "onlineUsers"), user.uid),
+          {userId: user.uid, isOnline: true},
+          {merge: true}
+        );
 
         dispatch(setCurrentUser(userData));
 
