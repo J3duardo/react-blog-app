@@ -10,16 +10,21 @@ import { setOpen } from "../../redux/features/snackbarSlice";
 
 interface Props {
   commentId: string;
-  loading: boolean
+  loading: boolean;
+  editMode: boolean;
+  setEditMode: Dispatch<SetStateAction<boolean>>
   setLoading: Dispatch<SetStateAction<boolean>>
   anchorElement: HTMLButtonElement | null
   setAnchorElement: Dispatch<SetStateAction<HTMLButtonElement | null>>
 };
 
-const UserActionsDropdown = ({commentId, loading, setLoading, anchorElement, setAnchorElement}: Props) => {
+const UserActionsDropdown = ({commentId, loading, setLoading, setEditMode, anchorElement, setAnchorElement}: Props) => {
   const dispatch = useDispatch();
 
+
+  /*-------------------------------------------*/
   // Funcionalidad para eliminar el comentario
+  /*-------------------------------------------*/
   const deleteCommentHandler = async () => {
     try {
       setLoading(true);
@@ -43,6 +48,7 @@ const UserActionsDropdown = ({commentId, loading, setLoading, anchorElement, set
     };
   };
 
+
   return (
     <Menu
       style={{padding: 0}}
@@ -59,7 +65,13 @@ const UserActionsDropdown = ({commentId, loading, setLoading, anchorElement, set
       }}
       onClose={() => setAnchorElement(null)}
     >
-      <MenuItem disabled={loading}>
+      <MenuItem
+        disabled={loading}
+        onClick={() => {
+          setEditMode(true);
+          setAnchorElement(null);
+        }}
+      >
         <BiEdit style={{marginRight: "5px"}} />
         Edit
       </MenuItem>
@@ -70,7 +82,7 @@ const UserActionsDropdown = ({commentId, loading, setLoading, anchorElement, set
         disabled={loading}
         onClick={deleteCommentHandler}
       >
-        <MdDeleteOutline style={{marginRight: "5px"}} />
+        <MdDeleteOutline style={{marginTop: "-10px"}} />
         Delete
       </MenuItem>
     </Menu>

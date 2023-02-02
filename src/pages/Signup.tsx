@@ -2,7 +2,7 @@ import {useState} from "react";
 import {Box, Button, Typography, Alert} from "@mui/material";
 import {useSelector, useDispatch} from "react-redux";
 import {useForm, FormProvider} from "react-hook-form";
-import {useNavigate, useLocation} from "react-router-dom";
+import {useNavigate, useLocation, Link} from "react-router-dom";
 import {AiOutlineLogin} from "react-icons/ai";
 import {GenericTextField, EmailField, PasswordField, PasswordConfirmField} from "../components/AuthFormsElements";
 import {LayoutState} from "../redux/store";
@@ -112,6 +112,18 @@ const Signup = () => {
           </Button>
         </form>
       </FormProvider>
+      <Typography
+        display="block"
+        marginTop="var(--spacing)"
+        textAlign="center"
+        variant="subtitle1"
+      >
+        Already have an account?
+        {" "}
+        <Link to="/login">
+          Login instead.
+        </Link>
+      </Typography>
     </Box>
   )
 };

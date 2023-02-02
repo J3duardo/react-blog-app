@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {Box, Button, Typography, Alert} from "@mui/material";
 import {useForm, FormProvider} from "react-hook-form";
-import {useNavigate, useLocation} from "react-router-dom";
+import {useNavigate, useLocation, Link} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
 import {AiOutlineLogin} from "react-icons/ai";
 import {EmailField, PasswordField} from "../components/AuthFormsElements";
@@ -94,6 +94,18 @@ const Login = () => {
           </Button>
         </form>
       </FormProvider>
+      <Typography
+        display="block"
+        marginTop="var(--spacing)"
+        textAlign="center"
+        variant="subtitle1"
+      >
+        Don't have an account?
+        {" "}
+        <Link to="/signup">
+          Signup instead.
+        </Link>
+      </Typography>
     </Box>
   )
 };
