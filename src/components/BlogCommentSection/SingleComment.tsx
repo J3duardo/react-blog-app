@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Avatar, Box, IconButton, Typography } from "@mui/material";
 import { collection, doc, onSnapshot } from "firebase/firestore";
 import { BsChevronDown, BsDot } from "react-icons/bs";
+import { Twemoji } from "react-emoji-render";
 import UserActionsDropdown from "./UserActionsDropdown";
 import CommentInput from "./CommentInput";
 import { CommentContent } from "./index";
@@ -111,7 +112,9 @@ const SingleComment = ({data, currentUser}: Props) => {
 
           <Box className="blog-comment__single-comment__text">
             <Typography variant="body1">
-              {comment}
+              <Twemoji>
+                {comment}
+              </Twemoji>
             </Typography>
           </Box>
         </Box>
