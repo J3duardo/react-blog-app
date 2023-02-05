@@ -70,6 +70,9 @@ const useFetchPopularBlogs = () => {
         console.log(err.message)
       })
       .finally(() => setLoadingPopularBlogs(false));
+      
+    } else {
+      setLoadingPopularBlogs(false)
     };
 
   }, [popularBlogsCount]);
