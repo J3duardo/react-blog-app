@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import { Box, Typography, Button, IconButton, Divider, Tooltip } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -13,10 +13,11 @@ import "./blogCard.css";
 
 interface Props {
   blog: Blog;
-  user: UserData | null
+  user: UserData | null;
+  setBlogs: Dispatch<SetStateAction<Blog[]>>
 };
 
-const BlogCard = ({blog, user}: Props) => {
+const BlogCard = ({blog, user, setBlogs}: Props) => {
   const {id, title, description, author, thumbUrl, categories, createdAt} = blog;
 
   const dispatch = useDispatch();
@@ -35,6 +36,11 @@ const BlogCard = ({blog, user}: Props) => {
     setDeleting(true);
 
     await deleteBlog(config);
+
+    // Actualizar la lista de blogs en el home.
+    setBlogs((prev) => {
+      return prev.filter(blog => blog.id !== id)
+    });
 
     setDeleting(false);
     setOpenDeleteModal(false);

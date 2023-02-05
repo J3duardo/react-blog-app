@@ -163,7 +163,16 @@ const Home = () => {
       {/* Grid de los posts */}
       {!loading &&
         <Box className="home-page__blog-grid">
-          {blogs.map(blog => <BlogCard key={blog.id} blog={blog} user={user} />)}
+          {blogs.map(blog => {
+            return (
+              <BlogCard
+                key={blog.id}
+                blog={blog}
+                user={user}
+                setBlogs={setBlogs}
+              />
+            )
+          })}
         </Box>
       }
 
