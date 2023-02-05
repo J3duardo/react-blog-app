@@ -1,7 +1,7 @@
 import { Dispatch as ReactDispatch, SetStateAction } from "react";
 import { AnyAction, Dispatch as ReduxDispatch } from "@reduxjs/toolkit";
 import { AuthError } from "firebase/auth";
-import { arrayUnion, deleteDoc, doc, DocumentData, DocumentReference, DocumentSnapshot, FirestoreError, getCountFromServer, getDoc, getDocs, limit, orderBy, query, setDoc, where } from "firebase/firestore";
+import { arrayUnion, collection, deleteDoc, doc, DocumentData, DocumentReference, DocumentSnapshot, FirestoreError, getCountFromServer, getDoc, getDocs, limit, orderBy, query, setDoc, where, writeBatch } from "firebase/firestore";
 import { deleteObject, ref, StorageError } from "firebase/storage";
 import { blogsCollection, db, storage } from "../firebase";
 import { setOpen } from "../redux/features/snackbarSlice";
@@ -81,21 +81,49 @@ export const updateBlogViews = async (
 export const deleteBlog = async ({blogData, dispatch}: DeleteBlogConfig) => {
   const {id, author, title, imageName} = blogData;
 
+  // Transacción para eliminar el post y sus comentarios asociados.
+  const batch = writeBatch(db);
+
   try {
-    // Path de las imágenes del blog en el bucket
+    // Path de las imágenes del blog en el bucket.
     const mainImagePath = `blogs/${author.uid}/${title}/${imageName}`;
     const previewImagePath = `blogs/${author.uid}/${title}/preview-${imageName}`;
 
-    // Referencias de las imágenes del blog
+    // Referencias de las imágenes del blog.
     const mainImageRef = ref(storage, mainImagePath);
     const previewImageRef = ref(storage, previewImagePath);
 
-    // Eliminar las imágenes
+    // Referencia del post a eliminar.
+    const postRef = doc(db, "blogs", id);
+
+    // Buscar los comentarios asociados al post.
+    const commentsQuery = query(collection(db, "blogComments"), where("postId", "==", id));
+    const comments = await getDocs(commentsQuery);
+    const commentsIds = comments.docs.map(doc => doc.id);
+
+    // Referencias de los comentarios del post.
+    const commentsRefs = commentsIds.map((id) => doc(db, "blogComments", id));
+
+    // Referencia de los views del post
+    const viewsRef = doc(db, "blogViews", id);
+
+    // Eliminar el post.
+    batch.delete(postRef);
+    
+    // Eliminar los comentarios del post.
+    commentsRefs.forEach((commentRef) => {
+      batch.delete(commentRef)
+    });
+
+    // Eliminar los views del post.
+    batch.delete(viewsRef);
+
+    // Ejecutar la transacción de eliminación del post y de sus comentarios.
+    await batch.commit();
+
+    // Eliminar las imágenes del post.
     await deleteObject(mainImageRef);
     await deleteObject(previewImageRef);
-
-    // Eliminar el documento del blog en la DB
-    await deleteDoc(doc(db, "blogs", id));
 
     dispatch(setOpen({open: true, message: "Blog deleted successfully"}));
     
