@@ -120,7 +120,7 @@ const Signup = () => {
       >
         Already have an account?
         {" "}
-        <Link to="/login">
+        <Link to="/login" onClick={(e) => loading && e.preventDefault()}>
           Login instead.
         </Link>
       </Typography>

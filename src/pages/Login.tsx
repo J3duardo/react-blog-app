@@ -102,7 +102,7 @@ const Login = () => {
       >
         Don't have an account?
         {" "}
-        <Link to="/signup">
+        <Link to="/signup" onClick={(e) => loading && e.preventDefault()}>
           Signup instead.
         </Link>
       </Typography>

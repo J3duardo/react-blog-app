@@ -80,7 +80,7 @@ export const CategorySelector = ({disabled, updatedCategories, editMode}: Props)
   return (
     <FormControl fullWidth>
       <InputLabel
-        style={{color: isInvalid ? "var(--mui-error)" : "grey"}}
+        style={{color: isInvalid ? "var(--error)" : "grey"}}
         id="categories-selector"
       >
         Select categories

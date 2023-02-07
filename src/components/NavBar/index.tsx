@@ -3,6 +3,7 @@ import {AppBar, Toolbar, Button, Box, Avatar} from "@mui/material";
 import {NavLink, useNavigate, useLocation} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
 import {collection, doc, setDoc} from "firebase/firestore";
+import { BsPencilSquare } from "react-icons/bs";
 import SearchBar from "./SearchBar";
 import VerificationWarning from "./VerificationWarning";
 import Spinner from "../Spinner";
@@ -69,7 +70,7 @@ const NavBar = () => {
   return (
     <AppBar
       ref={navbarRef}
-      style={{position: "fixed", zIndex: 1000000}}
+      className="navbar"
       component="nav"
     >
       <Toolbar className="navbar__toolbar inner-wrapper">
@@ -81,7 +82,7 @@ const NavBar = () => {
                   className={isActive ? "navbar__item__btn navbar__item__btn--active" : "navbar__item__btn"}
                   disableRipple
                 >
-                  BLOG
+                  MY BLOG
                 </Button>
               )
             }}
@@ -116,6 +117,9 @@ const NavBar = () => {
                     return (
                       <Button
                         key={el.id}
+                        style={{
+                          backgroundColor: el.title === "Signup" ? "var(--secondary)" : "transparent"
+                        }}
                         className={isActive ? "navbar__item__btn navbar__item__btn--active" : "navbar__item__btn"}
                         disableRipple
                       >
@@ -161,6 +165,7 @@ const NavBar = () => {
                 return (
                   <Button
                     className={isActive ? "navbar__item__btn navbar__item__btn--active" : "navbar__item__btn"}
+                    startIcon={<BsPencilSquare />}
                     disableRipple
                   >
                     Create

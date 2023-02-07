@@ -12,7 +12,8 @@
   order: 10;
   width: 100%;
   margin-bottom: var(--spacing);
-  border-bottom: var(--mui-border-wide);
+  padding-bottom: var(--spacing);
+  border-bottom: var(--border-wide);
 }
 
 .home-page__blog-grid {

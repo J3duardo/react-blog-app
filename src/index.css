@@ -22,7 +22,7 @@
   --text-dark: white;
   --text-grey: #5f5f5f;
   --bg-light: white;
-  --bg-dark: black;
+  --bg-dark: #0F1415;
   --scrollbar-color: #bbbbbb;
 
   --text-color: var(--text-color-light);
@@ -30,17 +30,19 @@
   --bg-card-color: var(--bg-card-light);
   --shadow-y: 0px 6px 10px -3px rgb(0,0,0,0.8);
 
-  --mui-error: #d32f2f;
-  --mui-primary: #1976D2;
-  --mui-border: 1px solid rgba(0, 0, 0, 0.12);
-  --mui-border-wide: 2px solid rgba(0, 0, 0, 0.12);
+  --error: #d32f2f;
+  --primary: #006C9D;
+  --secondary: #C87931;
+  --tertiary: #8EB1BF;
+
+  --border: 1px solid rgba(0, 0, 0, 0.12);
+  --border-wide: 2px solid rgba(0, 0, 0, 0.12);
 }
 
 body {
   padding: 0;
   color: var(--text-color);
   background-color: var(--bg-color);
-
 }
 
 * {
@@ -110,12 +112,12 @@ body {
 }
 
 .border-primary {
-  border: 1px solid var(--mui-primary);
+  border: 1px solid var(primary);
   border-radius: 5px;
 }
 
 .border-error {
-  border: 1px solid var(--mui-error);
+  border: 1px solid var(error);
   border-radius: 5px;
 }
 

@@ -7,7 +7,7 @@ const BTN_STYLES: React.CSSProperties = {
   position: "fixed",
   right: "var(--spacing)",
   bottom: "var(--spacing)",
-  backgroundColor: "var(--mui-primary)",
+  backgroundColor: "var(--primary)",
   zIndex: 1000,
 };
 

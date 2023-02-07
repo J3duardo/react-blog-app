@@ -51,7 +51,7 @@ const VerificationWarning = ({setShowWarning}: Props) => {
         alignItems: "center",
         width: "100%",
         padding: "var(--spacing-sm) 0",
-        backgroundColor: "var(--mui-error)",
+        backgroundColor: "var(--error)",
         color: "white",
         borderTop: "1px solid white"
       }}

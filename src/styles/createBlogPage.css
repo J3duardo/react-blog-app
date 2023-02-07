@@ -23,7 +23,7 @@
 }
 
 .create-blog__title-field--invalid .MuiInputBase-root {
-  border-color: 1px solid var(--mui-error);;
+  border-color: 1px solid var(--error);;
   background-color: rgba(255, 0, 0, 0.10);
 }
 

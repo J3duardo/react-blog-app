@@ -92,7 +92,7 @@ export const FileInput = ({imagePreview, setImage, disabled}: Props) => {
               top: "var(--spacing-sm)",
               right: "var(--spacing-sm)",
               fontSize: "24px",
-              color: "var(--mui-error)",
+              color: "var(--error)",
               cursor: "pointer"
             }}
             onClick={() => {

@@ -1,3 +1,10 @@
+
+.navbar {
+  position: fixed;
+  background-color: var(--primary);
+  z-index: 1000000;
+}
+
 .navbar__toolbar {
   display: flex;
   justify-content: space-between;
@@ -10,6 +17,11 @@
   justify-content: flex-start;
   align-items: stretch;
   gap: 6px;
+}
+
+.navbar__items button {
+  border-radius: 100px;
+  padding: 8px var(--spacing);
 }
 
 .navbar__searchbar {
@@ -35,7 +47,7 @@
   width: 100%;
   min-height: 25vh;
   max-height: 45vh;
-  border-top: var(--mui-border);
+  border-top: var(--border);
   background-color: white;
   box-shadow: var(--shadow-y);
   z-index: 100;

@@ -22,7 +22,7 @@ const NotFound = () => {
         Page not found!
       </Typography>
 
-      <AiOutlineWarning className="not-found__icon" color="var(--mui-error)" />
+      <AiOutlineWarning className="not-found__icon" color="var(--error)" />
 
       <Button
         color="error"

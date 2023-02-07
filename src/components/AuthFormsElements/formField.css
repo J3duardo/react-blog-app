@@ -5,11 +5,11 @@
 }
 
 .form__field--invalid .MuiInputBase-root {
-  border-color: 1px solid var(--mui-error);
+  border-color: 1px solid var(--error);
   background-color: rgba(255, 0, 0, 0.10);
 }
 
 .form-field__error-msg {
-  color: var(--mui-error);
+  color: var(--error);
   font-weight: bold;
 }

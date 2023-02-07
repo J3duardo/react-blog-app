@@ -21,7 +21,7 @@
 .search-results__item {
   width: 100%;
   padding: var(--spacing-sm);
-  border: var(--mui-border);
+  border: var(--border);
   border-radius: 5px;
 }
 
@@ -30,7 +30,7 @@
   justify-content: space-between;
   align-items: center;
   text-decoration: none;
-  color: var(--mui-primary);
+  color: var(--primary);
 }
 
 .search-result__title:hover {

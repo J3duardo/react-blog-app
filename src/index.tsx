@@ -7,6 +7,10 @@ import {store} from "./redux/store";
 import "./index.css";
 
 const theme = createTheme({
+  palette: {
+    primary: {main: "#006C9D"},
+    secondary: {main: "#C87931"}
+  },
   typography: {
     h1: {fontSize: "var(--heading-1)", lineHeight: "var(--line-height-titles)"},
     h2: {fontSize: "var(--heading-2)", lineHeight: "var(--line-height-titles)"},
