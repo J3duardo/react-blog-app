@@ -1,4 +1,5 @@
 import { Chip } from "@mui/material";
+import { Link } from "react-router-dom";
 
 interface Props {
   category: string;
@@ -6,12 +7,19 @@ interface Props {
 
 const CategoryChip = ({category}: Props) => {
   return (
-    <Chip
-      variant="filled"
-      label={category}
-      size="small"
-      color="primary"
-    />
+    <Link
+      style={{textDecoration: "none"}}
+      to={`/blog/search?category=${category}`}
+    >
+      <Chip
+        style={{cursor: "pointer"}}
+        variant="filled"
+        label={category}
+        size="small"
+        color="primary"
+        component="span"
+      />
+    </Link>
   )
 };
 
