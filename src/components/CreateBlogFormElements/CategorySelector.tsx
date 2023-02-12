@@ -1,12 +1,9 @@
 import {useEffect, useState} from "react";
 import {Box, Chip, MenuItem, FormControl, InputLabel, FormHelperText} from "@mui/material";
 import Select, {SelectChangeEvent} from "@mui/material/Select";
-import { useDispatch } from "react-redux";
 import {useFormContext} from "react-hook-form";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import ValidationErrorMsg from "../AuthFormsElements/ValidationErrorMsg";
-import { db } from "../../firebase";
-import { setOpen } from "../../redux/features/snackbarSlice";
+import useCategories from "../../hooks/useCategories";
 
 interface Props {
   disabled: boolean;
@@ -14,23 +11,17 @@ interface Props {
   editMode: boolean;
 };
 
-type Category = {
-  category: string,
-  categoryId: string
-};
-
 export const CategorySelector = ({disabled, updatedCategories, editMode}: Props) => {
-  const dispatch = useDispatch();
-
   // State de las categorías del backend
   const [categoriesSelectValues, setCategoriesSelectValues] = useState<string[]>([]);
-  const [loadingCategories, setLoadingCategories] = useState(true);
 
   // State de las categorías seleccionadas
-  const [categories, setCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  // Cargar las categorías de la base de datos
+  const {categories, loadingCategories} = useCategories();
 
   const {register, formState: {errors}} = useFormContext();
-
   const isInvalid = !!errors.categories;
 
 
@@ -40,40 +31,20 @@ export const CategorySelector = ({disabled, updatedCategories, editMode}: Props)
   /*-------------------------------------------------------------------*/
   useEffect(() => {
     if (editMode) {
-      setLoadingCategories(false);
-      setCategories(updatedCategories);
+      setSelectedCategories(updatedCategories);
 
     } else {
-      // Referencia de la colección de categorías
-      const collectionRef = collection(db, "categories");
-
-      // Query para consultar todas las categorías
-      const q = query(collectionRef, orderBy("category", "asc"));
-
-      // Ejecutar el query
-      getDocs(q)
-      .then(snapshot => {
-        const docs = snapshot.docs.map(cat => cat.data() as Category);
-        setCategoriesSelectValues(docs.map(el => el.category));
-      })
-      .catch((err: any) => {
-        console.log(`Error fetching categories: ${err.message}`);
-        dispatch(setOpen({
-          open: true,
-          message: "Error loading categories, refresh the page and try again."
-        }))
-      })
-      .finally(() => setLoadingCategories(false))
+      setCategoriesSelectValues(categories)
     }
-  }, [updatedCategories, editMode]);
+  }, [updatedCategories, categories, editMode]);
 
 
   /*------------------------------------------------*/
   // Actualizar el value del selector de categorías
   /*------------------------------------------------*/
-  const onChangeHandler = (e: SelectChangeEvent<typeof categories>) => {
+  const onChangeHandler = (e: SelectChangeEvent<typeof selectedCategories>) => {
     const {value} = e.target;
-    setCategories(typeof value === "string" ? value.split(",") : value);
+    setSelectedCategories(typeof value === "string" ? value.split(",") : value);
   };
 
 
@@ -92,7 +63,7 @@ export const CategorySelector = ({disabled, updatedCategories, editMode}: Props)
         variant="filled"
         label="Select categories"
         labelId="categories-selector"
-        value={categories}
+        value={selectedCategories}
         disabled={disabled || loadingCategories}
         MenuProps={{
           style: {width: "100%", maxHeight: "250px"}
@@ -106,7 +77,7 @@ export const CategorySelector = ({disabled, updatedCategories, editMode}: Props)
                 label={category}
                 onDelete={() => {
                   if (disabled) return null;
-                  setCategories(prev => {
+                  setSelectedCategories((prev) => {
                     return [...prev].filter(el => el !== category)
                   })
                 }}
@@ -115,7 +86,7 @@ export const CategorySelector = ({disabled, updatedCategories, editMode}: Props)
           </Box>
         )}
         {...register("categories", {
-          onChange: (e: SelectChangeEvent<typeof categories>) => onChangeHandler(e),
+          onChange: (e: SelectChangeEvent<typeof selectedCategories>) => onChangeHandler(e),
           required: {value: true, message: "You must select at least one category"}
         })}
       >
