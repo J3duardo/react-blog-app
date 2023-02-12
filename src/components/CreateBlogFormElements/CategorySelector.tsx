@@ -32,10 +32,9 @@ export const CategorySelector = ({disabled, updatedCategories, editMode}: Props)
   useEffect(() => {
     if (editMode) {
       setSelectedCategories(updatedCategories);
-
-    } else {
-      setCategoriesSelectValues(categories)
-    }
+    };
+    
+    setCategoriesSelectValues(categories);
   }, [updatedCategories, categories, editMode]);
 
 
