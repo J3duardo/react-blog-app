@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useRef } from "react";
+import { MutableRefObject, useEffect, useState, useRef } from "react";
 import { Box, Typography, IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -6,11 +6,14 @@ import { BsFacebook, BsGithub } from "react-icons/bs";
 import { AiFillBehanceCircle } from "react-icons/ai";
 import PopularBlog from "./PopularBlog";
 import PopularBlogSkeleton from "./PopularBlogSkeleton";
+import CategoryChip from "../BlogCard/CategoryChip";
 import useFetchPopularBlogs from "../../hooks/useFetchPopularBlogs";
+import useCategories from "../../hooks/useCategories";
 import { CategoryObj } from "../../utils/arrayOccurrencesCounter";
 import useResizeObserver from "../../hooks/useResizeObserver";
 import { setSidebarWidth } from "../../redux/features/layoutSlice";
 import "./mostPopularSidebar.css";
+import CategorySkeleton from "./CategorySkeleton";
 
 interface Props {
   offset: {
@@ -25,6 +28,9 @@ interface Props {
 const MostPopular = ({offset}: Props) => {
   const sidebarRef = useRef<HTMLElement | null>(null);
   const dispatch = useDispatch();
+  
+  // Cargar las categorías de la base de datos
+  const {categories, loadingCategories} = useCategories();
 
   // Calcular el width del sidebar
   const {elemWidth} = useResizeObserver({
@@ -56,9 +62,15 @@ const MostPopular = ({offset}: Props) => {
       component="aside"
     >
       <Box className="sidebar__content custom-scrollbar">
-        <Typography className="sidebar__main-title" variant="h4">
-          Popular posts
-        </Typography>
+        {loadingCategories && <CategorySkeleton />}
+
+        {!loadingCategories &&
+          <Box className="sidebar__tags">
+            {categories.map((category) => {
+              return <CategoryChip key={category} category={category} />
+            })}
+          </Box>
+        }
 
         {loadingPopularBlogs &&
           <Box className="sidebar__popular-blogs">
@@ -71,6 +83,10 @@ const MostPopular = ({offset}: Props) => {
 
         {!loadingPopularBlogs &&
           <Box className="sidebar__popular-blogs">
+            <Typography className="sidebar__main-title" variant="h5">
+              Popular posts
+            </Typography>
+            
             {popularBlogs.map(blog => {
               return (
                 <Link
