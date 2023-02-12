@@ -95,7 +95,7 @@ const Home = () => {
       component="section"
     >
       <Box className="home-page__header">
-        <Typography className="home-page__main-title" variant="h4">
+        <Typography className="home-page__main-title" variant="h5">
           Recent Posts
         </Typography>
 

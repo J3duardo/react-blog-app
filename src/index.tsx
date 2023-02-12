@@ -1,4 +1,4 @@
-import React from "react";
+import {StrictMode} from "react";
 import ReactDOM from "react-dom/client";
 import {Provider} from "react-redux";
 import {createTheme, ThemeProvider, StyledEngineProvider} from "@mui/material";
@@ -32,7 +32,7 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <React.StrictMode>
+  <StrictMode>
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
         <Provider store={store}>
@@ -40,5 +40,5 @@ root.render(
         </Provider>
       </ThemeProvider>
     </StyledEngineProvider>
-  </React.StrictMode>
+  </StrictMode>
 );
