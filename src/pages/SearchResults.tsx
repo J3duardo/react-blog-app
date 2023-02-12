@@ -59,16 +59,18 @@ const SearchResultsPage = () => {
         {results.map(post => {
           return (
             <Box key={post.id} className="search-results__item">
-              <Link className="search-result__title" to={`/blog/${post.id}`}>
-                <Typography key={post.id} variant="h5">
-                  {post.title}
-                </Typography>
+              <Box style={{display: "flex", justifyContent: "space-between", width: "100%"}}>
+                <Link className="search-result__title" to={`/blog/${post.id}`}>
+                  <Typography key={post.id} variant="h5">
+                    {post.title}
+                  </Typography>
+                </Link>
                 <Box className="search-results__categories">
                   {post.categories.slice(0, 3).map((category) => {
                     return <CategoryChip key={category} category={category} />
                   })}
                 </Box>
-              </Link>
+              </Box>
               <Divider style={{width: "100%", margin: "var(--spacing-sm) 0"}} />
               <Typography className="search-result__excerpt" variant="subtitle1">
                 {post.excerpt} ...

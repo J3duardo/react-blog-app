@@ -1,7 +1,7 @@
 import { Dispatch as ReactDispatch, SetStateAction } from "react";
 import { AnyAction, Dispatch as ReduxDispatch } from "@reduxjs/toolkit";
 import { AuthError } from "firebase/auth";
-import { arrayUnion, collection, deleteDoc, doc, DocumentData, DocumentReference, DocumentSnapshot, FirestoreError, getCountFromServer, getDoc, getDocs, limit, orderBy, query, setDoc, where, writeBatch } from "firebase/firestore";
+import { arrayUnion, collection, deleteDoc, doc, DocumentData, DocumentReference, DocumentSnapshot, FirestoreError, getCountFromServer, getDoc, getDocs, limit, orderBy, Query, query, setDoc, where, writeBatch } from "firebase/firestore";
 import { deleteObject, ref, StorageError } from "firebase/storage";
 import { blogsCollection, db, storage } from "../firebase";
 import { setOpen } from "../redux/features/snackbarSlice";
@@ -19,12 +19,18 @@ export interface BlogViews {
   views: string[];
 };
 
-interface SearchByTitlePromise {
+interface SearchPostsPromise {
   results: Blog[];
   firstDoc: DocumentSnapshot<DocumentData>;
   lastDoc: DocumentSnapshot<DocumentData>;
   count: number;
 };
+
+interface SearchArgs {
+  term: string | null;
+  category: string | null;
+  limitAmount: number
+}
 
 /**
  * Actualizar el contador de views del blog especificado.
@@ -160,30 +166,56 @@ export const deleteBlog = async ({blogData, dispatch}: DeleteBlogConfig) => {
 
 
 /**
- * Buscar posts por título especificando el término de búsqueda.
- * @param term Término de búsqueda de los posts.
+ * Buscar posts por título o por categoría según el término especificado en la URL.
+ * Sólo puedes especificar un término de búsqueda: `title` o `category`
+ * @param term Título del post a usar como criterio de búsqueda.
+ * @param category Categoría a usar como criterio de búsqueda.
  * @param limitAmount Cantidad de resultados a devolver por página.
  */
-export const searchByTitle = async (term: string, limitAmount: number): Promise<SearchByTitlePromise> => {
+export const searchPosts = async ({term, category, limitAmount}: SearchArgs): Promise<SearchPostsPromise> => {
   try {
-    const termArr = term.split(" ").map(term => term.toLowerCase());
+    if (term && category) {
+      throw new Error("You can specify onlye one search criteria")
+    };
 
-    const searchCountQuery = query(
-      blogsCollection,
-      where("titleArray", "array-contains-any", termArr)
-    );
+    let searchQuery: Query<DocumentData> | null = null;
+    let searchCountQuery: Query<DocumentData> | null = null;
+
+    if (term) {
+      const termArr = term.split(" ").map(term => term.toLowerCase());
+
+      searchQuery = query(
+        blogsCollection,
+        where("titleArray", "array-contains-any", termArr),
+        orderBy("createdAt", "desc"),
+        limit(limitAmount)
+      );
+
+      searchCountQuery = query(
+        blogsCollection,
+        where("titleArray", "array-contains-any", termArr)
+      );
+    };
+
+    if (category) {
+      searchQuery = query(
+        blogsCollection,
+        where("categories", "array-contains", category),
+        orderBy("createdAt", "desc"),
+        limit(limitAmount)
+      );
+
+      searchCountQuery = query(
+        blogsCollection,
+        where("categories", "array-contains", category)
+      );
+    };
+
 
     // Consultar el número total de resultados.
-    const resultsCount = await getCountFromServer(searchCountQuery);
+    const resultsCount = await getCountFromServer(searchCountQuery!);
 
-    const searchQueryWithLimit = query(
-      blogsCollection,
-      where("titleArray", "array-contains-any", termArr),
-      orderBy("createdAt", "desc"),
-      limit(limitAmount)
-    );
-
-    const docsSnap = await getDocs(searchQueryWithLimit);
+    const docsSnap = await getDocs(searchQuery!);
     const firstDoc = docsSnap.docs[0];
     const lastDoc = docsSnap.docs[docsSnap.docs.length - 1];
 

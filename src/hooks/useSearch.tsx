@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import { DocumentData, DocumentSnapshot, FirestoreError, getDocs, limit, orderBy, query, startAfter, where } from "firebase/firestore";
+import { DocumentData, DocumentSnapshot, FirestoreError, getDocs, limit, orderBy, Query, query, startAfter, where } from "firebase/firestore";
 import { Blog } from "../pages/Home";
 import { limitAmount } from "../components/NavBar/SearchBar";
 import { setOpen } from "../redux/features/snackbarSlice";
-import { searchByTitle } from "../utils/blogCrudHandlers";
+import { searchPosts } from "../utils/blogCrudHandlers";
 import { blogsCollection } from "../firebase";
 import { generateFirestoreErrorMsg } from "../utils/firebaseErrorMessages";
 
@@ -52,46 +52,46 @@ const useSearch = () => {
   /*----------------------------------------*/
   useEffect(() => {
     const term = searchParams.get("term");
+    const category = searchParams.get("category");
 
-    if(term) {
-      setLoading(true);
-      setNoResults(false);
-      setNoTerm(false);
-
-      searchByTitle(term, limitAmount)
-      .then(({results, firstDoc, lastDoc, count}) => {
-        const length = results.length;
-
-        setTotalResults(count);
-
-        if (length > 0) {
-          setFirstDoc(firstDoc);
-          setLastDoc(lastDoc);
-
-          setResults(() => {
-            const posts = results.map(post => {
-              return {
-                ...post,
-                excerpt: post.description.split(" ").slice(0, 50).join(" ")
-              }
-            }) satisfies SearchResults[]
-            return posts;
-          });
-        } else {
-          setNoResults(true);
-        };
-      })
-      .catch((err: Error) => {
-        dispatch(setOpen({open: true, message: err.message}));
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-      
-    } else {
+    if (!term && !category) {
       setLoading(false);
-      setNoTerm(true)
-    }
+      return setNoTerm(true);
+    };
+
+    setLoading(true);
+    setNoResults(false);
+    setNoTerm(false);
+
+    searchPosts({term, category, limitAmount})
+    .then(({results, firstDoc, lastDoc, count}) => {
+      const length = results.length;
+
+      setTotalResults(count);
+
+      if (length > 0) {
+        setFirstDoc(firstDoc);
+        setLastDoc(lastDoc);
+
+        setResults(() => {
+          const posts = results.map(post => {
+            return {
+              ...post,
+              excerpt: post.description.split(" ").slice(0, 50).join(" ")
+            }
+          }) satisfies SearchResults[]
+          return posts;
+        });
+      } else {
+        setNoResults(true);
+      };
+    })
+    .catch((err: Error) => {
+      dispatch(setOpen({open: true, message: err.message}));
+    })
+    .finally(() => {
+      setLoading(false);
+    });
   }, [searchParams]);
 
 
@@ -100,8 +100,10 @@ const useSearch = () => {
   /*---------------------------------------------*/
   useEffect(() => {
     const term = searchParams.get("term");
+    const category = searchParams.get("category");
 
-    if(!term) {
+    if (!term && !category) {
+      setLoading(false);
       return setNoTerm(true);
     };
 
@@ -109,17 +111,31 @@ const useSearch = () => {
       return
     };
 
-    const termArr = term.split(" ").map(term => term.toLowerCase());
+    let searchMoreQuery: Query<DocumentData> | null = null;
 
-    const searchMoreQuery = query(
-      blogsCollection,
-      where("titleArray", "array-contains-any", termArr),
-      orderBy("createdAt", "desc"),
-      limit(limitAmount),
-      startAfter(lastDoc)
-    );
+    if (term) {
+      const termArr = term.split(" ").map(term => term.toLowerCase());
+      searchMoreQuery = query(
+        blogsCollection,
+        where("titleArray", "array-contains-any", termArr),
+        orderBy("createdAt", "desc"),
+        limit(limitAmount),
+        startAfter(lastDoc)
+      );
+    };
 
-    if(loadMore && lastDoc) {
+    if (category) {
+      searchMoreQuery = query(
+        blogsCollection,
+        where("categories", "array-contains", category),
+        orderBy("createdAt", "desc"),
+        limit(limitAmount),
+        startAfter(lastDoc)
+      );
+    };
+
+
+    if(loadMore && searchMoreQuery) {
       setLoadingMore(true);
 
       getDocs(searchMoreQuery)

@@ -6,7 +6,7 @@ import { FaTimes } from "react-icons/fa";
 import ResultsListItem from "./ResultsListItem";
 import Spinner from "../Spinner";
 import { Blog } from "../../pages/Home";
-import { searchByTitle } from "../../utils/blogCrudHandlers";
+import { searchPosts } from "../../utils/blogCrudHandlers";
 import { setOpen } from "../../redux/features/snackbarSlice";
 
 export const limitAmount = 5;
@@ -51,7 +51,7 @@ const SearchBar = () => {
       setHideList(false);
       
       timerRef.current = setTimeout(() => {
-        searchByTitle(term, limitAmount)
+        searchPosts({term, category: null, limitAmount})
         .then(({results}) => {
           const length = results.length;
 
