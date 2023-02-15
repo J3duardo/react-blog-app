@@ -9,7 +9,8 @@ import { TiCancel } from "react-icons/ti";
 import { deleteObject, getDownloadURL, ref, StorageError, uploadBytes, uploadBytesResumable, UploadTask } from "firebase/storage";
 import { addDoc, doc, FirestoreError, serverTimestamp, setDoc } from "firebase/firestore";
 
-import { BlogTitleField, CategorySelector, DescriptionField, FileInput } from "../components/CreateBlogFormElements";
+import { BlogTitleField, CategorySelector, FileInput } from "../components/CreateBlogFormElements";
+import BlogContentField from "../components/CreateBlogFormElements/BlogContentField";
 import LinearProgressBar from "../components/LinearProgressBar";
 import { isEmptyField } from "../components/CreateBlogFormElements/isEmptyField";
 import { AuthState, LayoutState } from "../redux/store";
@@ -24,7 +25,7 @@ import "../styles/createBlogPage.css";
 export interface BlogFormFields {
   title: string;
   categories: string[];
-  description: string;
+  content: string;
   image: File;
 };
 
@@ -131,7 +132,7 @@ const CreateBlog = () => {
     let isEmpty =
       isEmptyField(methods, "title") ||
       isEmptyField(methods, "categories") ||
-      isEmptyField(methods, "description");
+      isEmptyField(methods, "content");
 
     // Si hay campos vacíos, retornar sin ejecutar el proceso
     if(isEmpty) {
@@ -212,7 +213,7 @@ const CreateBlog = () => {
             author: blogAuthor,
             title: values.title,
             categories: values.categories,
-            description: values.description,
+            content: values.content,
             imageUrl: url,
             thumbUrl,
             imageName,
@@ -282,7 +283,8 @@ const CreateBlog = () => {
             editMode={editMode}
             disabled={loading}
           />
-          <DescriptionField disabled={loading} />
+          {/* <DescriptionField disabled={loading} /> */}
+          <BlogContentField defaultValue={values?.content} />
 
           {/* No mostrar el input de imagen si está en modo edición */}
           {!editMode &&
