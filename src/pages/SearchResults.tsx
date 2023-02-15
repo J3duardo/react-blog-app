@@ -72,9 +72,7 @@ const SearchResultsPage = () => {
                 </Box>
               </Box>
               <Divider style={{width: "100%", margin: "var(--spacing-sm) 0"}} />
-              <Typography className="search-result__excerpt" variant="subtitle1">
-                {post.excerpt} ...
-              </Typography>
+              <Typography dangerouslySetInnerHTML={{__html: post.excerpt + " ..."}}/>
             </Box>
           )
         })}

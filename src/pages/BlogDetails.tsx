@@ -265,9 +265,10 @@ const BlogDetails = () => {
             <Divider style={{marginBottom: "var(--spacing)"}} />
 
             {/* Contenido del post */}
-            <Typography className="blog-detail__description">
-              {blogDetails!.description}
-            </Typography>
+            <Typography
+              // className="blog-detail__content"
+              dangerouslySetInnerHTML={{__html: blogDetails!.content}}
+            />
 
             {/* Seccción de comentarios del post */}
             <BlogCommentSection postId={blogId!} />

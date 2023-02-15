@@ -10,7 +10,7 @@ import { searchPosts } from "../../utils/blogCrudHandlers";
 import { setOpen } from "../../redux/features/snackbarSlice";
 
 export const limitAmount = 5;
-export type SearchResult = Pick<Blog, "id" | "title" | "description" | "thumbUrl">
+export type SearchResult = Pick<Blog, "id" | "title" | "content" | "thumbUrl">
 
 
 const SearchBar = () => {

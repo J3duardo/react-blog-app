@@ -16,7 +16,7 @@ export interface Blog {
   id: string;
   title: string;
   categories: string[];
-  description: string;
+  content: string;
   imageUrl: string;
   thumbUrl: string;
   author: BlogAuthor;

@@ -18,7 +18,7 @@ interface Props {
 };
 
 const BlogCard = ({blog, user, setBlogs}: Props) => {
-  const {id, title, description, author, thumbUrl, categories, createdAt} = blog;
+  const {id, title, content, author, thumbUrl, categories, createdAt} = blog;
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -117,9 +117,7 @@ const BlogCard = ({blog, user, setBlogs}: Props) => {
 
         <Box className="blog-card__description">
           <Box className="blog-card__description-overlay" />
-          <Typography variant="body2">
-            {description}
-          </Typography>
+          <Typography dangerouslySetInnerHTML={{__html: content}}/>
         </Box>
 
         <Button

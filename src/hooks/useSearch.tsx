@@ -77,7 +77,7 @@ const useSearch = () => {
           const posts = results.map(post => {
             return {
               ...post,
-              excerpt: post.description.split(" ").slice(0, 50).join(" ")
+              excerpt: post.content.split(" ").slice(0, 50).join(" ")
             }
           }) satisfies SearchResults[]
           return posts;

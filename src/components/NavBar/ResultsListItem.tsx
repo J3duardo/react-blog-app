@@ -26,11 +26,8 @@ const ResultsListItem = ({post, setHideListOnClick}: Props) => {
       <Box
         className="navbar__searchbar__results__list-item-text overflow-ellipsis"
       >
-        <Typography variant="body1" color="black">
+        <Typography variant="body1" fontWeight={700} color="black">
           {post.title}
-        </Typography>
-        <Typography variant="subtitle1" color="grey">
-          {post.description}
         </Typography>
       </Box>
     </ListItem>
