@@ -123,6 +123,8 @@
 
 .blog-detail__title {
   margin-bottom: var(--spacing);
+  font-weight: 700;
+  font-size: var(--heading-3);
 }
 
 .blog-detail__description {
