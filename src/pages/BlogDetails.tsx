@@ -4,6 +4,7 @@ import { Box, Button, CircularProgress, Divider, IconButton, Tooltip, Typography
 import { useSelector, useDispatch } from "react-redux";
 import { collection, doc, onSnapshot} from "firebase/firestore";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import { HiEye } from "react-icons/hi";
 import { BiExpand } from "react-icons/bi";
 import NotFound from "./NotFound";
 import ImageModal from "../components/ImageModal";
@@ -201,20 +202,9 @@ const BlogDetails = () => {
               
               {blogViews > 0 &&
                 <Box className="blog-detail__views-counter">
-                  {blogViews.toString().split("").map((char, i) => {
-                    return (
-                      <Typography key={i} className="blog-detail__views-counter__item">
-                        {char}
-                      </Typography>
-                    )
-                  })}
-                  <Typography
-                    style={{
-                      marginLeft: "5px",
-                      fontSize: "inherit",
-                      fontWeight: 700
-                    }}>
-                    Views
+                  <Typography className="blog-detail__views-counter__item">
+                    <HiEye />
+                    {blogViews}
                   </Typography>
                 </Box>
               }
