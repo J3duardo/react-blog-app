@@ -54,22 +54,20 @@ export const updateBlogViews = async (
     };
   
     // Agregar la ip al array de IPs del blogView si no está presente
-    await  setDoc(
+    await setDoc(
       viewsRef,
       {
         blogId: blogRef.id,
-        views: arrayUnion(ip),
-        // viewsCount: increment(1)
+        views: arrayUnion(ip)
       },
       {merge: true}
     );
 
-    // Actualizar el contador del blogView con el length actualizado del array de IPs
+    // Actualizar los views del post
     const ref = doc(db, "blogViews", blogRef.id);
     const viewsDoc = await getDoc(ref);
     const currentViews = viewsDoc.get("views") as string[];
 
-    await setDoc(viewsRef, {viewsCount: currentViews.length}, {merge: true});
     setBlogViews(currentViews.length);
     
   } catch (error: unknown) {
