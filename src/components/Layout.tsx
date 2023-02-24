@@ -1,8 +1,7 @@
-import {useState, useEffect, useRef, ReactNode, useMemo} from "react";
+import { useState, useEffect, useRef, ReactNode, useMemo } from "react";
 import { Box } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import NavBar from "./NavBar";
 import Sidebar from "./MostPopularSidebar";
 import { LayoutState } from "../redux/store";
 
@@ -63,8 +62,6 @@ const Layout = ({children}: Props) => {
         className="inner-wrapper"
         component="div"
       >
-        <NavBar />
-
         {/* No mostrar el sidebar en login o signup */}
         {!pathname.includes("login") && !pathname.includes("signup") && 
           <Sidebar

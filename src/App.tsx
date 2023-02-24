@@ -6,9 +6,10 @@ import Spinner from "./components/Spinner";
 import GenericSnackbar from "./components/GenericSnackbar";
 import ErrorBoundaries from "./components/ErrorBoundaries";
 import Layout from "./components/Layout";
+import GoToTopBtn from "./components/GoToTopBtn";
+import NavBar from "./components/NavBar";
 import {UserData, setCurrentUser, logoutUser, setLoading} from "./redux/features/authSlice";
 import {auth, db} from "./firebase";
-import GoToTopBtn from "./components/GoToTopBtn";
 
 const HomePage = lazy(() => import("./pages/Home"));
 const LoginPage = lazy(() => import("./pages/Login"));
@@ -77,6 +78,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <ErrorBoundaries>
+        <NavBar />
         <Suspense
           fallback={
             <Spinner
