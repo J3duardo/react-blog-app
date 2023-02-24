@@ -1,27 +1,26 @@
-
 .navbar {
   position: fixed;
   background-color: var(--primary);
   z-index: 1000000;
 }
 
-.navbar__toolbar {
+.navbar__items--desktop {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: var(--spacing);
   width: 100%;
 }
 
-.navbar__items {
-  display: flex;
-  justify-content: flex-start;
-  align-items: stretch;
-  gap: 6px;
-}
-
-.navbar__items button {
+.navbar__items--desktop button {
   border-radius: 100px;
   padding: 8px var(--spacing);
+}
+
+.navbar__items__links {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-sm);
 }
 
 .navbar__searchbar {
@@ -96,6 +95,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  min-width: 180px;
 }
 
 .navbar__item {
