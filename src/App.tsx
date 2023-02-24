@@ -1,15 +1,15 @@
 import {Suspense, lazy, useEffect} from "react";
 import {useDispatch} from "react-redux";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
-import {collection, doc, setDoc} from "firebase/firestore";
+import {collection, doc, getDoc, setDoc} from "firebase/firestore";
 import Spinner from "./components/Spinner";
 import GenericSnackbar from "./components/GenericSnackbar";
 import ErrorBoundaries from "./components/ErrorBoundaries";
 import Layout from "./components/Layout";
 import GoToTopBtn from "./components/GoToTopBtn";
 import NavBar from "./components/NavBar";
-import {UserData, setCurrentUser, logoutUser, setLoading} from "./redux/features/authSlice";
-import {auth, db} from "./firebase";
+import {UserData, setCurrentUser, setCurrentProfile, logoutUser, setLoading, UserProfile} from "./redux/features/authSlice";
+import {auth, db, profilesCollection} from "./firebase";
 
 const HomePage = lazy(() => import("./pages/Home"));
 const LoginPage = lazy(() => import("./pages/Login"));
@@ -40,6 +40,31 @@ const App = () => {
           {userId: user.uid, isOnline: true},
           {merge: true}
         );
+
+        // Consultar el perfil del usuario y
+        // crear el perfil si no existe
+        const profileData: UserProfile = {
+          uid: user.uid,
+          name: user.displayName!.split(" ")[0],
+          lastname: user.displayName!.split(" ")[1],
+          email: user.email,
+          emailVerified: user.emailVerified,
+          avatar: "https://res.cloudinary.com/dzytlqnoi/image/upload/v1615203395/default-user-img_t3xpfj.jpg"
+        };
+        
+        const userProfileDoc = doc(profilesCollection, user.uid);
+
+        // Verificar si ya el perfil existe
+        const profile = await getDoc(userProfileDoc);
+
+        // Crear el perfil si no existe
+        if (!profile.exists()) {
+          await setDoc(userProfileDoc, profileData, {merge: true});
+          dispatch(setCurrentProfile(profileData));
+          
+        } else {
+          dispatch(setCurrentProfile(profile.data() as UserProfile));
+        };
 
         dispatch(setCurrentUser(userData));
 
@@ -75,20 +100,20 @@ const App = () => {
   }, []);
 
 
+  const SuspenseFallback = (
+    <Spinner
+      containerHeight="100vh"
+      spinnerWidth="50px"
+      spinnerHeight="50px"
+      spinnerColor="black"
+    />
+  );
+
   return (
     <BrowserRouter>
       <ErrorBoundaries>
         <NavBar />
-        <Suspense
-          fallback={
-            <Spinner
-              containerHeight="100vh"
-              spinnerWidth="50px"
-              spinnerHeight="50px"
-              spinnerColor="black"
-            />
-          }
-        >
+        <Suspense fallback={SuspenseFallback}>
           <Layout>
             <Routes>
               <Route path="/" element={<HomePage />} />
@@ -102,8 +127,6 @@ const App = () => {
           </Layout>
         </Suspense>
         <GenericSnackbar />
-
-        {/* Botón global para ir al top de las páginas */}
         <GoToTopBtn />
       </ErrorBoundaries>
     </BrowserRouter>

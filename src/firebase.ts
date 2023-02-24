@@ -16,4 +16,5 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const blogsCollection = collection(db, "blogs");
+export const profilesCollection = collection(db, "profiles");
 export const storage = getStorage(app);
