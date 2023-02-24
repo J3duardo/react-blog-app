@@ -1,15 +1,15 @@
 import { Avatar, Box, Button } from "@mui/material";
 import { BsPencilSquare } from "react-icons/bs";
 import { NavLink } from "react-router-dom";
-import { UserData } from "../../redux/features/authSlice";
+import { UserProfile } from "../../redux/features/authSlice";
 
 interface Props {
-  user: UserData;
+  profile: UserProfile;
   isLoggingOut: boolean;
   logoutHandler: () => Promise<void>
 };
 
-const AuthLinks = ({user, isLoggingOut, logoutHandler}: Props) => {
+const AuthLinks = ({profile, isLoggingOut, logoutHandler}: Props) => {
   return (
     <Box className="navbar__items__links">
       <NavLink
@@ -24,10 +24,10 @@ const AuthLinks = ({user, isLoggingOut, logoutHandler}: Props) => {
             >
               <Avatar
                 className="navbar__item__btn__avatar"
-                src={user!.photoURL || ""}
-                alt={user!.displayName}
+                src={profile.avatar}
+                alt={`${profile.name} avatar`}
               />
-              {user!.displayName.split(" ")[0]}
+              {profile.name}
             </Button>
           )
         }}

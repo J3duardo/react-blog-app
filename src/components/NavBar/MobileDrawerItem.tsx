@@ -34,7 +34,7 @@ const MobileDrawerItem = ({Icon, text, path, disabled, onClick}: Props) => {
                 <ListItemText
                   primary={
                     <Typography
-                      style={{fontWeight: isActive ? 700 : 400}}
+                      style={{fontWeight: (isActive && path !== "#") ? 700 : 400}}
                       variant="body1"
                     >
                       {text}

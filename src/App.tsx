@@ -26,6 +26,8 @@ const App = () => {
     // Listener de los cambios de autenticación
     auth.onAuthStateChanged(async (user) => {
       if (user){
+        dispatch(setLoading(true));
+
         const userData: UserData = {
           uid: user.uid,
           displayName: user.displayName || "",
@@ -67,6 +69,7 @@ const App = () => {
         };
 
         dispatch(setCurrentUser(userData));
+        dispatch(setLoading(false));
 
       } else {
         dispatch(logoutUser());

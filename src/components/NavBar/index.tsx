@@ -23,7 +23,7 @@ const NavBar = () => {
 
   const navigate = useNavigate();
   
-  const {isAuth, user, loading} = useSelector((state: AuthState) => state.auth);
+  const {isAuth, user, profile, loading} = useSelector((state: AuthState) => state.auth);
   const dispatch = useDispatch();
 
   const [showVerificationWarning, setShowVerificationWarning] = useState(true);
@@ -110,9 +110,9 @@ const NavBar = () => {
           }
 
           {/* Items para usuarios autenticados */}
-          {isAuth && !loading &&
+          {profile && !loading &&
             <AuthLinks
-              user={user!}
+              profile={profile}
               isLoggingOut={isLoggingOut}
               logoutHandler={logoutHandler}
             />
@@ -134,7 +134,7 @@ const NavBar = () => {
 
           {/* Drawer del menú de navegación mobile */}
           <NavbarMobileDrawer
-            user={user}
+            profile={profile}
             navbarHeight={navbarHeight}
             open={isMobileDrawerOpen}
             isLoggingOut={isLoggingOut}

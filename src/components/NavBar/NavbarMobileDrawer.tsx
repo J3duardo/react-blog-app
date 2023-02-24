@@ -5,7 +5,7 @@ import {AiOutlineHome, AiOutlineLogin, AiOutlineUser} from "react-icons/ai";
 import {BsPencilSquare} from "react-icons/bs";
 import {RiLogoutCircleLine} from "react-icons/ri";
 import MobileDrawerItem from "./MobileDrawerItem";
-import {UserData} from "../../redux/features/authSlice";
+import {UserProfile} from "../../redux/features/authSlice";
 
 const MENU_ITEMS_NOAUTH = [
   {id: 1, title: "Login", to: "/login", Icon: AiOutlineLogin},
@@ -13,7 +13,7 @@ const MENU_ITEMS_NOAUTH = [
 ];
 
 interface Props {
-  user: UserData | null;
+  profile: UserProfile | null;
   open: boolean;
   navbarHeight: number;
   isLoggingOut: boolean;
@@ -21,7 +21,7 @@ interface Props {
   setOpen: Dispatch<SetStateAction<boolean>>
 };
 
-const NavbarMobileDrawer = ({user, open, navbarHeight, isLoggingOut, logoutHandler, setOpen}: Props) => {
+const NavbarMobileDrawer = ({profile, open, navbarHeight, isLoggingOut, logoutHandler, setOpen}: Props) => {
   return (
     <Drawer
       className="navbar__items__drawer"
@@ -42,7 +42,7 @@ const NavbarMobileDrawer = ({user, open, navbarHeight, isLoggingOut, logoutHandl
               path="/"
             />
 
-            {!user &&
+            {!profile &&
               MENU_ITEMS_NOAUTH.map((item) => (
                 <MobileDrawerItem
                   key={item.id}
@@ -53,7 +53,7 @@ const NavbarMobileDrawer = ({user, open, navbarHeight, isLoggingOut, logoutHandl
               ))
             }
 
-            {user &&
+            {profile &&
               <>
                 <ListItem disablePadding>
                   <NavLink
@@ -66,9 +66,9 @@ const NavbarMobileDrawer = ({user, open, navbarHeight, isLoggingOut, logoutHandl
                       >
                         <ListItemIcon>
                           <Avatar
-                            style={{width: "var(--heading-4)", height: "var(--heading-4)"}}
-                            src={user.photoURL || ""}
-                            alt={user.displayName}
+                            className="navbar__item__btn__avatar"
+                            src={profile.avatar}
+                            alt={`${profile.name} avatar`}
                           />
                         </ListItemIcon>
                         <ListItemText
@@ -77,7 +77,7 @@ const NavbarMobileDrawer = ({user, open, navbarHeight, isLoggingOut, logoutHandl
                               style={{fontWeight: isActive ? 700 : 400}}
                               variant="body1"
                             >
-                              {user.displayName.split(" ")[0]}
+                              {profile.name}
                             </Typography>
                           }
                         />

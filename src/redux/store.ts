@@ -1,5 +1,5 @@
 import {configureStore} from "@reduxjs/toolkit";
-import {authReducer, UserData} from "./features/authSlice";
+import {authReducer, UserData, UserProfile} from "./features/authSlice";
 import {layoutReducer} from "./features/layoutSlice";
 import {snackbarReducer} from "./features/snackbarSlice";
 
@@ -7,6 +7,7 @@ export interface AuthState {
   auth: {
     isAuth: boolean;
     user: UserData | null;
+    profile: UserProfile;
     loading: boolean;
   }
 };
