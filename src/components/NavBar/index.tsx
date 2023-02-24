@@ -1,23 +1,34 @@
 import {useState, useEffect, useRef, MutableRefObject} from "react";
-import {AppBar, Toolbar, Button, Box} from "@mui/material";
-import {NavLink} from "react-router-dom";
+import {AppBar, Toolbar, Button, Box, IconButton} from "@mui/material";
+import {NavLink, useNavigate} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
+import {AiOutlineMenu} from "react-icons/ai";
+import {VscChromeClose} from "react-icons/vsc";
+import {collection, doc, setDoc} from "firebase/firestore";
 import NoAuthLinks from "./NoAuthLinks";
 import AuthLinks from "./AuthLinks";
 import SearchBar from "./SearchBar";
+import NavbarMobileDrawer from "./NavbarMobileDrawer";
 import VerificationWarning from "./VerificationWarning";
 import Spinner from "../Spinner";
 import useResizeObserver from "../../hooks/useResizeObserver";
 import {AuthState} from "../../redux/store";
 import {setNavbarHeight, setPagePadding} from "../../redux/features/layoutSlice";
+import {logoutUser} from "../../redux/features/authSlice";
+import {auth, db} from "../../firebase";
 import "./navBar.css";
 
 const NavBar = () => {
   const navbarRef = useRef<HTMLDivElement | null>(null);
+
+  const navigate = useNavigate();
+  
   const {isAuth, user, loading} = useSelector((state: AuthState) => state.auth);
   const dispatch = useDispatch();
 
   const [showVerificationWarning, setShowVerificationWarning] = useState(true);
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // Determinar el height del navbar
   const {elemHeight: navbarHeight} = useResizeObserver({
@@ -32,6 +43,31 @@ const NavBar = () => {
       bottom: `calc(${navbarHeight}px + 1rem)`
     }));
   }, [navbarHeight]);
+
+
+  // Funcionalidad para cerrar sesión
+  const logoutHandler = async () => {
+    try {
+      setIsLoggingOut(true);
+
+      // Pasar el estado a offline
+      await setDoc(
+        doc(collection(db, "onlineUsers"), user!.uid),
+        {userId: user!.uid, isOnline: false},
+        {merge: true}
+      );
+
+      await auth.signOut();
+
+      dispatch(logoutUser());
+      navigate("/login", {replace: true});
+
+    } catch (error: any) {
+      console.log(`Error logging user out`, error.message);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
 
   return (
@@ -75,8 +111,37 @@ const NavBar = () => {
 
           {/* Items para usuarios autenticados */}
           {isAuth && !loading &&
-            <AuthLinks user={user!} />
+            <AuthLinks
+              user={user!}
+              isLoggingOut={isLoggingOut}
+              logoutHandler={logoutHandler}
+            />
           }
+        </Box>
+
+        {/* Items del navbar en pantallas mobile */}
+        <Box className="navbar__items--mobile">
+          <SearchBar disabled={isMobileDrawerOpen} />
+
+          {/* Botón para abrir/cerrar el drawer */}
+          <IconButton
+            className="navbar__items__drawer-btn"
+            size="large"
+            onClick={() => setIsMobileDrawerOpen((prev) => !prev)}
+          >
+            {isMobileDrawerOpen ? <VscChromeClose /> : <AiOutlineMenu />}
+          </IconButton>
+
+          {/* Drawer del menú de navegación mobile */}
+          <NavbarMobileDrawer
+            user={user}
+            navbarHeight={navbarHeight}
+            open={isMobileDrawerOpen}
+            isLoggingOut={isLoggingOut}
+            setOpen={setIsMobileDrawerOpen}
+            logoutHandler={logoutHandler}
+          />
+
         </Box>
       </Toolbar>
 

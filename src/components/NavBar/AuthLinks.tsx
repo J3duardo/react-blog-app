@@ -1,47 +1,15 @@
-import { useState } from "react";
 import { Avatar, Box, Button } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { BsPencilSquare } from "react-icons/bs";
 import { NavLink } from "react-router-dom";
-import { logoutUser, UserData } from "../../redux/features/authSlice";
-import { collection, doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../../firebase";
+import { UserData } from "../../redux/features/authSlice";
 
 interface Props {
   user: UserData;
+  isLoggingOut: boolean;
+  logoutHandler: () => Promise<void>
 };
 
-const AuthLinks = ({user}: Props) => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  // Funcionalidad para cerrar sesión
-  const logoutHandler = async () => {
-    try {
-      setIsLoggingOut(true);
-
-      // Pasar el estado a offline
-      await setDoc(
-        doc(collection(db, "onlineUsers"), user!.uid),
-        {userId: user!.uid, isOnline: false},
-        {merge: true}
-      );
-
-      await auth.signOut();
-
-      dispatch(logoutUser());
-      navigate("/login", {replace: true});
-
-    } catch (error: any) {
-      console.log(`Error logging user out`, error.message);
-    } finally {
-      setIsLoggingOut(false);
-    }
-  };
-
+const AuthLinks = ({user, isLoggingOut, logoutHandler}: Props) => {
   return (
     <Box className="navbar__items__links">
       <NavLink

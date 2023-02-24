@@ -12,8 +12,11 @@ import { setOpen } from "../../redux/features/snackbarSlice";
 export const limitAmount = 5;
 export type SearchResult = Pick<Blog, "id" | "title" | "content" | "thumbUrl">
 
+interface Props {
+  disabled?: boolean;
+};
 
-const SearchBar = () => {
+const SearchBar = ({disabled}: Props) => {
   const searchBoxRef = useRef<HTMLDivElement | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const navigate = useNavigate();
@@ -114,6 +117,7 @@ const SearchBar = () => {
         className="navbar__searchbar__textfield"
         placeholder="Search post..."
         value={term}
+        disabled={disabled}
         onChange={(e) => setTerm(e.target.value)}
         onKeyDown={onSubmitHandler}
         InputProps={{
