@@ -1,11 +1,10 @@
 import {useState} from "react";
 import {Box, Button, Typography, Alert} from "@mui/material";
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch} from "react-redux";
 import {useForm, FormProvider} from "react-hook-form";
 import {useNavigate, useLocation, Link} from "react-router-dom";
 import {AiOutlineLogin} from "react-icons/ai";
 import {GenericTextField, EmailField, PasswordField, PasswordConfirmField} from "../components/AuthFormsElements";
-import {LayoutState} from "../redux/store";
 import {AuthConfig, authHandler} from "../utils/auth";
 import withoutAuthentication from "../HOC/withoutAuthentication";
 import "../styles/authForms.css";
@@ -19,7 +18,6 @@ export interface SignupFormFields {
 };
 
 const Signup = () => {
-  const {pagePadding} = useSelector((state: LayoutState) => state.layout);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const {state} = useLocation();
@@ -70,8 +68,6 @@ const Signup = () => {
 
   return (
     <Box
-      paddingTop={pagePadding.top}
-      paddingBottom={pagePadding.bottom}
       className="authForm"
       component="section"
     >

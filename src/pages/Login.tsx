@@ -2,10 +2,9 @@ import {useState} from "react";
 import {Box, Button, Typography, Alert} from "@mui/material";
 import {useForm, FormProvider} from "react-hook-form";
 import {useNavigate, useLocation, Link} from "react-router-dom";
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch} from "react-redux";
 import {AiOutlineLogin} from "react-icons/ai";
 import {EmailField, PasswordField} from "../components/AuthFormsElements";
-import {LayoutState} from "../redux/store";
 import {AuthConfig, authHandler} from "../utils/auth";
 import withoutAuthentication from "../HOC/withoutAuthentication";
 import "../styles/authForms.css";
@@ -19,7 +18,6 @@ const Login = () => {
   const {state} = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const {pagePadding} = useSelector((state: LayoutState) => state.layout);
 
   const [loading, setLoading] = useState(false);
   const [backendError, setBackendError] = useState<null | string>(null);
@@ -55,8 +53,6 @@ const Login = () => {
 
   return (
     <Box
-      paddingTop={pagePadding.top}
-      paddingBottom={pagePadding.bottom}
       className="authForm"
       component="section"
     >
