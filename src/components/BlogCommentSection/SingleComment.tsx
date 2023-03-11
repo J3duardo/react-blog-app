@@ -49,7 +49,6 @@ const SingleComment = ({data, currentUser}: Props) => {
     <Box
       style={{opacity: loading ? 0.5 : 1}}
       className="blog-comment__single-comment card-shadow"
-      component="article"
     >
       {/*
         Mostrar el dropdown de editar y borrar

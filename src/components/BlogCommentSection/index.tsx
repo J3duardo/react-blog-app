@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Box, Avatar, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
+import { motion, AnimatePresence } from "framer-motion";
 import { collection, onSnapshot, orderBy, query, Timestamp, where } from "firebase/firestore";
 import CommentInput from "./CommentInput";
 import SingleComment from "./SingleComment";
@@ -95,19 +96,27 @@ const BlogCommentInput = ({postId}: Props) => {
       }
 
       {/* Lista de comentarios */}
-      {comments.length > 0 &&
-        <Box className="blog-comment__comment-list" component="section">
+      <Box className="blog-comment__comment-list" component="ul">
+        <AnimatePresence initial={false}>
           {comments.map((comment) => {
             return (
-              <SingleComment
+              <Box
                 key={comment.id}
-                data={comment}
-                currentUser={user}
-              />
+                style={{padding: 0}}
+                component={motion.li}
+                initial={{height: 0, opacity: 0}}
+                animate={{height: "auto", opacity: 1}}
+                exit={{height: 0, opacity: 0}}
+              >
+                <SingleComment
+                  data={comment}
+                  currentUser={user}
+                />
+              </Box>
             )
           })}
-        </Box>
-      }
+        </AnimatePresence>
+      </Box>
     </Box>
   )
 };
